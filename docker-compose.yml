@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  networks:
+    internal:
+  # nginx for reverse proxy
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    volumes:
+      - ./nginx/volume:/etc/nginx/sites-available
+    networks:
+      - internal
+    ports:
+      - 7000:7000
+      - 7433:7433
+    restart: unless-stopped
+  # heimdall for dashboard
+  heimdall:
+    build: ./heimdall
+    container_name: heimdall
+    volumes:
+      - ./heimdall/volume:/config
+    networks:
+      - internal
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Seoul
