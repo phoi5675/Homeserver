@@ -1,27 +1,39 @@
 version: "3.8"
+
+# /etc/hosts for other VMs
+x-extra_hosts: &default-extra_hosts
+  - "windows:10.10.10.100"
+  - "truenas:10.10.10.101"
+  - "heimdall:127.0.0.1"
+
+networks:
+  internal:
+
 services:
-  networks:
-    internal:
   # nginx for reverse proxy
   nginx:
-    build: ./nginx
+    image: nginx
     container_name: nginx
     volumes:
-      - ./nginx/volume:/etc/nginx/sites-available
+      - ./nginx/sites-available:/etc/nginx/sites-available
     networks:
       - internal
+    extra_hosts: *default-extra_hosts
     ports:
-      - 7000:7000
-      - 7433:7433
+      - 8000:8000
+      - 8433:8433
     restart: unless-stopped
+    environment:
+      - TZ=Asia/Seoul
   # heimdall for dashboard
   heimdall:
-    build: ./heimdall
-    container_name: heimdall
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heimdall_container
     volumes:
       - ./heimdall/volume:/config
     networks:
       - internal
+    extra_hosts: *default-extra_hosts
     restart: unless-stopped
     environment:
       - PUID=1000
