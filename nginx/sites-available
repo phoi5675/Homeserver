@@ -3,6 +3,7 @@ server {
     
     server_names dashboard.phoiweb.com;
     location / {
+        try_files $uri $uri/ /index.php?$query_string;
         proxy_pass http://heimdall/;
     }
 }

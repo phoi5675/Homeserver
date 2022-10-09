@@ -4,10 +4,16 @@ version: "3.8"
 x-extra_hosts: &default-extra_hosts
   - "windows:10.10.10.100"
   - "truenas:10.10.10.101"
-  - "heimdall:127.0.0.1"
+  - "heimdall:10.10.10.202"
 
 networks:
+  front-network:
+    driver: bridge
   internal:
+    ipam:
+      driver: default
+      config:
+        - subnet: "10.10.10.0/24"
 
 services:
   # nginx for reverse proxy
@@ -17,11 +23,13 @@ services:
     volumes:
       - ./nginx/sites-available:/etc/nginx/sites-available
     networks:
-      - internal
+      front-network:
+      internal:
+        ipv4_address: 10.10.10.201
     extra_hosts: *default-extra_hosts
     ports:
       - 8000:8000
-      - 8433:8433
+      - 8443:8443
     restart: unless-stopped
     environment:
       - TZ=Asia/Seoul
@@ -32,7 +40,11 @@ services:
     volumes:
       - ./heimdall/volume:/config
     networks:
-      - internal
+      internal:
+        ipv4_address: 10.10.10.202
+    expose:
+      - 80
+      - 443
     extra_hosts: *default-extra_hosts
     restart: unless-stopped
     environment:
