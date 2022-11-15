@@ -1,5 +1,6 @@
 #!/bin/bash
 # TODO: Add script for date / time settings.
+# TODO: Add korean font setup
 
 # Edit interface name based on network interfaces
 readonly WAN_IFACE=eth0 # Inbound
@@ -93,17 +94,33 @@ set_ufw() {
     sudo sed -i 's/DEFAULT_FORWARD_POLICY=\"DROP\"/DEFAULT_FORWARD_POLICY=\"ACCEPT\"/g' "${default_config}"
 
     echo "Set MASQUERADE..."
-    local insert_pos="$(($(cat \/etc\/ufw\/before.rules | wc -l) - 3))"
-    # TODO: 일단 ufw 그냥 파일로 때워버릴지 말지 결정하기,,,
-    local before_rules="\n
-# NAT Table rules \n
-\*nat \n
-:POSTROUTING ACCEPT \[0:0] \n
-\n
-# Forward traffic from ${LOC_NAT} to ${WAN_IFACE} \n
--A POSTROUTING -s ${LOC_NAT} -o ${WAN_IFACE} -j MASQUERADE \n
-"
-    sudo sed -i "${insert_pos}i ${before_rules}" "${ufw_before}"
+    local insert_pos="$(($(cat \/etc\/ufw\/before.rules | wc -l) - 2))"
+    local masquerade="\\
+# NAT Table rules \\
+\*nat \\
+:POSTROUTING ACCEPT \[0:0] \\
+\\
+# Forward traffic from ${LOC_NAT} to ${WAN_IFACE} \\
+-A POSTROUTING -s ${LOC_NAT} -o ${WAN_IFACE} -j MASQUERADE \\
+\\
+COMMIT
+\\"
+    sudo sed -i "$ a ${masquerade}" "${ufw_before}"
+
+    local http=8000
+    local https=8443
+    local tcp_port=8001
+    echo "Setup incoming port http:\"${http}\" https:\"${https}\" tcp port:\"${tcp_port}\""
+    sudo ufw allow ${http}/tcp
+    sudo ufw allow ${https}/tcp
+    sudo ufw allow ${tcp_port}/tcp
+
+    local internal_net="192.168.0.0/24"
+    echo "Allow ssh port from internal network(\"${internal_net}\")"
+    sudo ufw allow in on ${WAN_IFACE} from ${internal_net} to any port 22
+
+    echo "Restart ufw..."
+    sudo ufw disable && sudo ufw enable
 }
 
 set_host() {
@@ -120,11 +137,11 @@ set_apt_mirror() {
 }
 
 main() {
-    set_apt_mirror
+    # set_apt_mirror
     set_ufw
-    edit_interface
-    set_host
-    set_nginx
+    # edit_interface
+    # set_host
+    # set_nginx
 }
 
 main 2>&1 | tee -a setup.log
