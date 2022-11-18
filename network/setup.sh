@@ -1,6 +1,7 @@
 #!/bin/bash
 # TODO: Add script for date / time settings.
 # TODO: Add korean font setup
+# TODO: uncomment net.ipv4.ip_forward=1 in /etc/sysctl.conf
 
 # Edit interface name based on network interfaces
 readonly WAN_IFACE=eth0 # Inbound
@@ -151,6 +152,7 @@ set_apt_mirror() {
 
 main() {
     # set_apt_mirror
+    # set_certbot
     set_ufw
     # edit_interface
     # set_host
