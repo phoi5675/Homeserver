@@ -11,8 +11,8 @@ sudo sed -i 's/\/ports./\/kr.ports./g' /etc/apt/sources.list
 # Install packages
 sudo apt-get update
 
+sudo apt-get install -y -f chromium-browser
+
+sudo apt-get install -y -f fonts-nanum
+
 sudo apt-get install -y ubuntu-desktop
-
-sudo apt-get install -y chromium-browser
-
-sudo apt-get install fonts-nanum -y -f
