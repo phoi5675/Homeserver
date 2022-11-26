@@ -24,3 +24,20 @@ $ sudo mount -t davfs -o noexec http://127.0.0.1:9843/ /mnt/shared/
 
 - run [vm_setup.sh](./vm_setup.sh) in VM
 - shutdown and restart vm(if reboot not works)
+
+## VPN Setup
+
+- Install network-manager-l2tp(included in vm_setup.sh)
+- Edit yml file in `/etc/netplan/`
+
+```shell
+network:
+    renderer: NetworkManager # add this line
+    ethernets:
+        enp2s0:
+            dhcp4: true
+    version: 2
+```
+
+- Run `sudo netplan apply`
+- Configure VPN in settings(GUI)

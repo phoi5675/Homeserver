@@ -1,11 +1,10 @@
 #!/bin/bash
 # TODO: Add script for date / time settings.
 # TODO: Add korean font setup
-# TODO: uncomment net.ipv4.ip_forward=1 in /etc/sysctl.conf
 
 # Edit interface name based on network interfaces
-readonly WAN_IFACE=eth0 # Inbound
-readonly LAN_IFACE=eth1 # Outbound
+readonly WAN_IFACE=ens18 # Inbound
+readonly LAN_IFACE=ens19 # Outbound
 
 readonly LOC_NAT="10.10.10.0/24"
 
@@ -25,14 +24,14 @@ auto lo
 iface lo inet loopback
 
 # LAN
-auto ${WAN_IFACE}
-iface ${WAN_IFACE} inet static
+auto ${LAN_IFACE}
+iface ${LAN_IFACE} inet static
 address 10.10.10.1
 netmask 255.255.255.0
 
 # WAN 
-auto ${LAN_IFACE}
-iface ${LAN_IFACE} inet dhcp
+auto ${WAN_IFACE}
+iface ${WAN_IFACE} inet dhcp
 
 # Private gateway for VM and CT
 EOF
@@ -86,8 +85,8 @@ set_ufw() {
     local ufw_sysctl="/etc/ufw/sysctl.conf"
     local ufw_before="/etc/ufw/before.rules"
 
-    echo "Install ufw..."
-    sudo apt-get update -qq && sudo apt-get install ufw -y -qq
+    # echo "Install ufw..."
+    # sudo apt-get update -qq && sudo apt-get install ufw -y -qq
 
     echo "Enable port forwarding..."
     sudo sed -i '/net\/ipv4\/ip_forward/s/^#//g' "${ufw_sysctl}"
@@ -95,10 +94,10 @@ set_ufw() {
     sudo sed -i 's/DEFAULT_FORWARD_POLICY=\"DROP\"/DEFAULT_FORWARD_POLICY=\"ACCEPT\"/g' "${default_config}"
 
     echo "Set MASQUERADE..."
-    local insert_pos="$(($(cat \/etc\/ufw\/before.rules | wc -l) - 2))"
+    local insert_pos="$(($(cat \/etc\/ufw\/before.rules | wc -l)))"
     local masquerade="\\
 # NAT Table rules \\
-\*nat \\
+*nat \\
 :POSTROUTING ACCEPT \[0:0] \\
 \\
 # Forward traffic from ${LOC_NAT} to ${WAN_IFACE} \\
@@ -106,8 +105,8 @@ set_ufw() {
 \\
 COMMIT
 \\"
-    sudo sed -i "$ a ${masquerade}" "${ufw_before}"
-
+    echo "${before_rules}" >>"${ufw_before}"
+    # sudo sed -i "${insert_pos}i ${before_rules}" "${ufw_before}"
     local http=8000
     local https=8443
     local tcp_port=8001
@@ -146,17 +145,22 @@ set_host() {
 }
 
 set_apt_mirror() {
-    sudo sed -i 's/archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
+    sudo sed -i 's/kr.archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
     sudo apt-get -qq update
 }
 
 main() {
-    # set_apt_mirror
-    # set_certbot
+    # Check script is running in root
+    if [ "$EUID" -ne 0 ]; then
+        echo "Please run as root"
+        exit
+    fi
+    set_apt_mirror
     set_ufw
-    # edit_interface
-    # set_host
-    # set_nginx
+    edit_interface
+    # set_certbot
+    set_host
+    set_nginx
 }
 
 main 2>&1 | tee -a setup.log
