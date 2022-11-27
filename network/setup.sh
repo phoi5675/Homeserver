@@ -1,6 +1,7 @@
 #!/bin/bash
 # TODO: Add script for date / time settings.
 # TODO: Add korean font setup
+# TODO: fix inserting configs for ufw before.rules
 
 # Edit interface name based on network interfaces
 readonly WAN_IFACE=ens18 # Inbound
