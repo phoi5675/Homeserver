@@ -1,7 +1,4 @@
 #!/bin/bash
-# TODO: Add script for date / time settings.
-# TODO: Add korean font setup
-# TODO: fix inserting configs for ufw before.rules
 
 # Edit interface name based on network interfaces
 readonly WAN_IFACE=ens18 # Inbound
@@ -84,6 +81,7 @@ EOF
 set_ufw() {
     local default_config="/etc/default/ufw"
     local ufw_sysctl="/etc/ufw/sysctl.conf"
+    local sysctl="/etc/sysctl.conf"
     local ufw_before="/etc/ufw/before.rules"
 
     # echo "Install ufw..."
@@ -91,22 +89,26 @@ set_ufw() {
 
     echo "Enable port forwarding..."
     sudo sed -i '/net\/ipv4\/ip_forward/s/^#//g' "${ufw_sysctl}"
+    sudo sed -i 'net.ipv4.ip_forward/s/^#//g' "${sysctl}"
     echo "Set ufw configs..."
     sudo sed -i 's/DEFAULT_FORWARD_POLICY=\"DROP\"/DEFAULT_FORWARD_POLICY=\"ACCEPT\"/g' "${default_config}"
 
     echo "Set MASQUERADE..."
     local insert_pos="$(($(cat \/etc\/ufw\/before.rules | wc -l)))"
-    local masquerade="\\
-# NAT Table rules \\
-*nat \\
-:POSTROUTING ACCEPT \[0:0] \\
-\\
-# Forward traffic from ${LOC_NAT} to ${WAN_IFACE} \\
--A POSTROUTING -s ${LOC_NAT} -o ${WAN_IFACE} -j MASQUERADE \\
-\\
+    local masquerade="
+# NAT Table rules 
+*nat
+:POSTROUTING ACCEPT [0:0]
+
+# Forward traffic from ${LOC_NAT} to ${WAN_IFACE} 
+-A POSTROUTING -s ${LOC_NAT} -o ${WAN_IFACE} -j MASQUERADE 
+
 COMMIT
-\\"
-    echo "${before_rules}" >>"${ufw_before}"
+"
+    # echo "${before_rules}" >>"${ufw_before}"
+    cat >>"${ufw_before}" <<EOF
+${masquerade}
+EOF
     # sudo sed -i "${insert_pos}i ${before_rules}" "${ufw_before}"
     local http=8000
     local https=8443
@@ -149,7 +151,17 @@ set_apt_mirror() {
     sudo sed -i 's/kr.archive.ubuntu.com/mirror.kakao.com/g' /etc/apt/sources.list
     sudo apt-get -qq update
 }
+set_misc() {
+    echo "Set timezone to KST..."
+    TZ="Asia/Seoul"
 
+    sudo ln -snf /usr/share/zoneinfo/"${TZ}" /etc/localtime &&
+        sudo echo "${TZ}" >/etc/timezone
+
+    echo "Install nanum-fonts..."
+    sudo apt-get update && sudo apt-get install fonts-nanum
+
+}
 main() {
     # Check script is running in root
     if [ "$EUID" -ne 0 ]; then
@@ -157,6 +169,7 @@ main() {
         exit
     fi
     set_apt_mirror
+    set_misc
     set_ufw
     edit_interface
     # set_certbot
