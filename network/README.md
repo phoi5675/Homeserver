@@ -6,6 +6,5 @@
 
 # References
 
-- [Setup OpenVPN server in Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-set-up-and-configure-an-openvpn-server-on-ubuntu-22-04)
-- [Setup OpenVPN server in Ubuntu(2)](https://ubuntu.com/server/docs/service-openvpn)
+- [Setup OpenVPN server in Ubuntu](https://dejavuqa.tistory.com/243)
 - [Create ovpn with easy-openvpn](https://discourse.ubuntu.com/t/generate-client-ovpn-file/19954)

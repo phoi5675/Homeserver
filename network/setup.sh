@@ -29,7 +29,9 @@ netmask 255.255.255.0
 
 # WAN 
 auto ${WAN_IFACE}
-iface ${WAN_IFACE} inet dhcp
+iface ${WAN_IFACE} inet static
+address 172.31.0.100
+netmask 255.255.255.0
 
 # Private gateway for VM and CT
 EOF
@@ -118,7 +120,7 @@ EOF
     sudo ufw allow ${https}/tcp
     sudo ufw allow ${tcp_port}/tcp
 
-    local internal_net="192.168.0.0/24"
+    local internal_net="172.31.0.0/24"
     echo "Allow ssh port from internal network(\"${internal_net}\")"
     sudo ufw allow in on ${WAN_IFACE} from ${internal_net} to any port 22
 
