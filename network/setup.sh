@@ -19,19 +19,20 @@ edit_interface() {
     sudo cat >"${interfaces}" <<EOF
 # The loopback network
 auto lo
-iface lo inet loopback
+    iface lo inet loopback
 
 # LAN
 auto ${LAN_IFACE}
-iface ${LAN_IFACE} inet static
-address 10.10.10.1
-netmask 255.255.255.0
+    iface ${LAN_IFACE} inet static
+    address 10.10.10.1
+    netmask 255.255.255.0
 
 # WAN 
 auto ${WAN_IFACE}
-iface ${WAN_IFACE} inet static
-address 172.31.0.100
-netmask 255.255.255.0
+    iface ${WAN_IFACE} inet static
+    address 172.31.0.100
+    netmask 255.255.255.0
+    gateway 172.31.0.1
 
 # Private gateway for VM and CT
 EOF
@@ -115,6 +116,7 @@ EOF
     local http=8000
     local https=8443
     local tcp_port=8001
+    local admin_port=2048
     echo "Setup incoming port http:\"${http}\" https:\"${https}\" tcp port:\"${tcp_port}\""
     sudo ufw allow ${http}/tcp
     sudo ufw allow ${https}/tcp
@@ -123,6 +125,8 @@ EOF
     local internal_net="172.31.0.0/24"
     echo "Allow ssh port from internal network(\"${internal_net}\")"
     sudo ufw allow in on ${WAN_IFACE} from ${internal_net} to any port 22
+    echo "Allow internal network access from wlan(\"${internal_net}\")"
+    sudo ufw allow in on ${WAN_IFACE} from ${internal_net} to any port ${admin_port}
 
     echo "Restart ufw..."
     sudo ufw disable && sudo ufw enable
