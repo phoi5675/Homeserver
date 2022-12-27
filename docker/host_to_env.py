@@ -25,12 +25,12 @@ if __name__=='__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--host_path',
         type=str,
-        help='hostfile\'s path',
-        default='../router/setups/hosts')
+        required=True,
+        help='hostfile\'s path')
     parser.add_argument('--env_path',
         type=str,
-        help='envfile\'s path',
-        default='./env/.env')
+        required=True,
+        help='envfile\'s path')
     
     args = parser.parse_args()
     host_to_env(args.host_path, args.env_path)
