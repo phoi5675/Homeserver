@@ -1,4 +1,5 @@
-172.31.1.100 truenas
-172.31.1.101 windows
-172.31.1.102 docker
-172.31.2.201 heimdall
+172.31.1.2 truenas
+172.31.1.3 windows
+172.31.1.4 docker
+172.31.2.2 dashboard
+172.31.2.3 cloud

@@ -9,22 +9,3 @@ networks:
       driver: default
       config:
         - subnet: "172.31.0.0/16"
-
-services:
-  # heimdall for dashboard
-  heimdall:
-    image: lscr.io/linuxserver/heimdall:latest
-    container_name: heimdall
-    volumes:
-      - ./heimdall/volume:/config
-    expose:
-      - 80
-      - 443
-    networks:
-      default:
-        ipv4_address: ${heimdall}
-    restart: unless-stopped
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Seoul
