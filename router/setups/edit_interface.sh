@@ -14,19 +14,16 @@ auto lo
     iface lo inet loopback
 
 # LAN
+# Private gateway for VM and CT
 auto ${LAN_IFACE}
     iface ${LAN_IFACE} inet static
-    address 10.10.10.1
+    address 172.31.0.1
     netmask 255.255.255.0
 
 # WAN 
 auto ${WAN_IFACE}
-    iface ${WAN_IFACE} inet static
-    address 172.31.0.100
-    netmask 255.255.255.0
-    gateway 172.31.0.1
+    iface ${WAN_IFACE} inet dhcp
 
-# Private gateway for VM and CT
 EOF
 
     echo "Restarting service..."

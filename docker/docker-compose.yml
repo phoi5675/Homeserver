@@ -1,51 +1,27 @@
 version: "3.8"
 
-# /etc/hosts for other VMs
-x-extra_hosts: &default-extra_hosts
-  - "windows:10.10.10.100"
-  - "truenas:10.10.10.101"
-  - "heimdall:10.10.10.202"
-
 networks:
-  front-network:
-    driver: bridge
-  internal:
+  # front-network:
+  #   driver: bridge
+  default:
     ipam:
       driver: default
       config:
-        - subnet: "10.10.10.0/24"
+        - subnet: "172.31.0.0/16"
 
 services:
-  # nginx for reverse proxy
-  nginx:
-    image: nginx
-    container_name: nginx
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      front-network:
-      internal:
-        ipv4_address: 10.10.10.201
-    extra_hosts: *default-extra_hosts
-    ports:
-      - 8000:80
-      - 8443:443
-    restart: unless-stopped
-    environment:
-      - TZ=Asia/Seoul
   # heimdall for dashboard
   heimdall:
     image: lscr.io/linuxserver/heimdall:latest
-    container_name: heimdall_container
+    container_name: heimdall
     volumes:
       - ./heimdall/volume:/config
-    networks:
-      internal:
-        ipv4_address: 10.10.10.202
     expose:
       - 80
       - 443
-    extra_hosts: *default-extra_hosts
+    networks:
+      default:
+        ipv4_address: ${heimdall}
     restart: unless-stopped
     environment:
       - PUID=1000

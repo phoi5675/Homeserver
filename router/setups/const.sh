@@ -4,6 +4,6 @@
 export WAN_IFACE=ens18 # Inbound
 export LAN_IFACE=ens19 # Outbound
 
-export LOC_NAT="10.10.10.0/24"
+export LOC_NAT="172.31.0.0/16"
 
 export networkd="systemd-networkd.service"

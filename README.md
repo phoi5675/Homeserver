@@ -2,12 +2,10 @@
 
 Configuration files and documentations for DIY home server
 
-# Composing docker
+## Composing docker
 
-_Writing in progress_
+```bash
+docker-compose $(find docker* | sed -e 's/^/-f /') up -d
+```
 
 ---
-
-## Note for Heimdall
-
-**A user must be created to get PUID and GUID in VM or CT**
