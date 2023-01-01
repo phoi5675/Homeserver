@@ -2,12 +2,12 @@ version: "3.8"
 
 # TODO: Add dns server(router) using docker daemon config
 networks:
-  default:
+  vlan:
     driver: macvlan
     driver_opts:
       parent: ens18
     ipam:
-      driver: default
       config:
         - subnet: "172.31.0.0/16"
+          ip_range: "172.31.2.0/24"
           gateway: "172.31.0.1"

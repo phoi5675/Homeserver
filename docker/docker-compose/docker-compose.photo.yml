@@ -43,7 +43,7 @@ services:
       - 80
       - 443
     networks:
-      default:
+      vlan:
         ipv4_address: ${photo}
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username

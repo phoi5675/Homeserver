@@ -11,7 +11,7 @@ services:
       - 80
       - 443
     networks:
-      default:
+      vlan:
         ipv4_address: ${dashboard}
     restart: unless-stopped
     environment:
