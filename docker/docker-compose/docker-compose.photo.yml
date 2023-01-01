@@ -41,6 +41,7 @@ services:
       - apparmor:unconfined
     expose:
       - 80
+      - 443
     networks:
       default:
         ipv4_address: ${photo}
