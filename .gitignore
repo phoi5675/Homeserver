@@ -1,3 +1,5 @@
 */volume/*
 
 vpn_config.sh
+secret.sh
+.env

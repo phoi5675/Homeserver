@@ -38,20 +38,16 @@ COMMIT
 ${masquerade}
 EOF
     # sudo sed -i "${insert_pos}i ${before_rules}" "${ufw_before}"
-    local http=8000
+    local http=8080
     local https=8443
     local tcp_port=8001
-    local admin_port=2048
     echo "Setup incoming port http:\"${http}\" https:\"${https}\" tcp port:\"${tcp_port}\""
     sudo ufw allow ${http}/tcp
     sudo ufw allow ${https}/tcp
     sudo ufw allow ${tcp_port}/tcp
 
-    local internal_net="172.31.0.0/24"
-    echo "Allow ssh port from internal network(\"${internal_net}\")"
-    sudo ufw allow in on ${WAN_IFACE} from ${internal_net} to any port 22
-    echo "Allow internal network access from wlan(\"${internal_net}\")"
-    sudo ufw allow in on ${WAN_IFACE} from ${internal_net} to any port ${admin_port}
+    echo "Allow ssh port from internal network(\"${LOC_NAT}\")"
+    sudo ufw allow in on ${WAN_IFACE} from ${LOC_NAT} to any port 22 proto tcp
 
     echo "Restart ufw..."
     sudo ufw disable && sudo ufw enable

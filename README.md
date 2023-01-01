@@ -2,12 +2,11 @@
 
 Configuration files and documentations for DIY home server
 
-# Composing docker
+## Composing docker
 
-_Writing in progress_
+```bash
+# Run in ./docker/
+./compose_docker.sh
+```
 
 ---
-
-## Note for Heimdall
-
-**A user must be created to get PUID and GUID in VM or CT**

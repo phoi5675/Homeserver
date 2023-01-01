@@ -1,0 +1,11 @@
+version: "3.8"
+
+# TODO: Add dns server(router) using docker daemon config
+networks:
+  # front-network:
+  #   driver: bridge
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.31.0.0/16"
