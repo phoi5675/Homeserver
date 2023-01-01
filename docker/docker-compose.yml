@@ -2,8 +2,9 @@ version: "3.8"
 
 # TODO: Add dns server(router) using docker daemon config
 networks:
-  vlan:
+  default:
     driver: ipvlan
+    external: true
     driver_opts:
       parent: ens18
     ipam:
