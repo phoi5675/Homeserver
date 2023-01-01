@@ -41,6 +41,9 @@ services:
       - apparmor:unconfined
     ports:
       - "80:80" # HTTP port (host:container)
+    networks:
+      default:
+        ipv4_address: ${photo}
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTO_PWD} # initial superadmin password (minimum 8 characters)
