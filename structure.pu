@@ -1,6 +1,8 @@
 @startuml structure
 
 left to right direction
+skinparam linetype ortho
+
 package "LAN / 방화벽 관련 다이어그램" as lan {
     cloud "=172.31.0.1" as gateway_cloud {
         package "Router(gateway)" as router {
@@ -10,11 +12,9 @@ package "LAN / 방화벽 관련 다이어그램" as lan {
             }
             component "ufw" as ufw {
                 component "public" as pub {
-                    portin "http(8080)" as http_pub
                     portin "https(8443)" as https_pub
                     portin "vpn" as vpn_in
 
-                    portout "http(8080)" as http_prv
                     portout "https(8443)" as https_prv
                     portout "vpn_out" as vpn_out
                 }
@@ -45,7 +45,7 @@ package "LAN / 방화벽 관련 다이어그램" as lan {
 
         actor "Admin" as admin
     }
-    cloud "=172.31.2.0/16" as iot_ip {
+    cloud "=192.168.0.0/24" as iot_ip {
         actor "Guest" as guest
         entity "IoT" as iot
     } 
@@ -53,7 +53,7 @@ package "LAN / 방화벽 관련 다이어그램" as lan {
     note as N1 
         - https는 router의 letsencrypt 이용
 
-        - 게스트 네트워크(172.31.2.0)은 내부 네트워크로 접근 불가
+        - 게스트 네트워크(192.168.0.0)은 내부 네트워크로 접근 불가
         - inbound는 http / https / vpn handshake 만 허용
         - 이외 protocol은 기본값 차단
     end note
@@ -67,10 +67,8 @@ node "VPN" as vpn {
     actor remote
 }
 
-http_prv --> nginx_in
 https_prv --> nginx_in
 
-http_pub <-l- outside
 https_pub <-l- outside
 
 webdrv -> shared_port
