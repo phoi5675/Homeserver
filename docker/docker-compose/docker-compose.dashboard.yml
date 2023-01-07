@@ -7,11 +7,8 @@ services:
     container_name: dashboard
     volumes:
       - ./heimdall/volume:/config
-    expose:
-      - 80
-      - 443
     networks:
-      default:
+      mvlan:
         ipv4_address: ${dashboard}
     restart: unless-stopped
     environment:

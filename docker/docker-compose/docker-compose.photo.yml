@@ -39,11 +39,8 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-    expose:
-      - 80
-      - 443
     networks:
-      default:
+      mvlan:
         ipv4_address: ${photo}
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username
