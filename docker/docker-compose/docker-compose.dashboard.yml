@@ -5,7 +5,7 @@ services:
     image: lscr.io/linuxserver/heimdall:latest
     container_name: ${dashboard}
     volumes:
-      - ./heimdall/volume:/config
+      - /heimdall/volume:/config
     restart: unless-stopped
     environment:
       - PUID=1000
