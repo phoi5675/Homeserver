@@ -4,6 +4,8 @@ services:
   dashboard:
     image: lscr.io/linuxserver/heimdall:latest
     container_name: ${dashboard}
+    networks:
+      docker_network:
     volumes:
       - /heimdall/volume:/config
     restart: unless-stopped

@@ -42,6 +42,8 @@ services:
       - apparmor:unconfined
     # ports:
     # - "80:80" # HTTP port
+    networks:
+      docker_network:
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTO_PWD} # initial superadmin password (minimum 8 characters)

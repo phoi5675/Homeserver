@@ -4,6 +4,9 @@ services:
   nginx:
     image: nginx
     container_name: "nginx"
+    networks:
+      docker_network:
+      ext_network:
     ports:
       - 8080:80
       - 8443:443
