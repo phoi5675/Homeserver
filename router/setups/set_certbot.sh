@@ -9,8 +9,13 @@ set_certbot() {
     echo "Add values to DNS Server MANUALLY!"
     sudo certbot certonly --manual --preferred-challenges \
         dns -d "*.phoiweb.com" -d "phoiweb.com"
-    # TODO: Add auto-renewal script
-    # 0 0 1 * * /bin/bash -l -c 'certbot renew --quiet'
+
+    sudo cat >/etc/cron.d/cron_letsencrypt <<EOF
+    0 0 1 * * /bin/bash -l -c 'certbot renew --quiet'
+    # Empty line
+EOF
+    sudo chmod 0644 /etc/cron.d/cron_letsencrypt
+    sudo crontab /etc/cron.d/cron_letsencrypt
 }
 
 set_certbot

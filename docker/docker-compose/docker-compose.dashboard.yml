@@ -4,12 +4,9 @@ services:
   # dashboard
   dashboard:
     image: lscr.io/linuxserver/heimdall:latest
-    container_name: dashboard
+    container_name: ${dashboard}
     volumes:
       - ./heimdall/volume:/config
-    networks:
-      mvlan:
-        ipv4_address: ${dashboard}
     restart: unless-stopped
     environment:
       - PUID=1000

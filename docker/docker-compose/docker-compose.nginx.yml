@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  nginx:
+    image: nginx
+    container_name: "nginx"
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx:/etc/nginx/template
+      - /etc/letsencrypt:/etc/letsencrypt
+    environment:
+      NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"

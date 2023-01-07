@@ -32,6 +32,7 @@ services:
     image: photoprism/photoprism:latest
     depends_on:
       - mariadb
+    container_name: ${photo}
     ## Don't enable automatic restarts until PhotoPrism has been properly configured and tested!
     ## If the service gets stuck in a restart loop, this points to a memory, filesystem, network, or database issue:
     ## https://docs.photoprism.app/getting-started/troubleshooting/#fatal-server-errors
@@ -39,14 +40,13 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-    networks:
-      mvlan:
-        ipv4_address: ${photo}
+    ports:
+      - "80:80" # HTTP port
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTO_PWD} # initial superadmin password (minimum 8 characters)
       PHOTOPRISM_AUTH_MODE: "password" # authentication mode (public, password)
-      PHOTOPRISM_SITE_URL: "http://${photo}/" # server URL in the format "http(s)://domain.name(:port)/(path)"
+      PHOTOPRISM_SITE_URL: "http://${photo}:80/" # server URL in the format "http(s)://domain.name(:port)/(path)"
       PHOTOPRISM_ORIGINALS_LIMIT: 5000 # file size limit for originals in MB (increase for high-res video)
       PHOTOPRISM_HTTP_COMPRESSION: "gzip" # improves transfer speed and bandwidth utilization (none or gzip)
       PHOTOPRISM_LOG_LEVEL: "info" # log level: trace, debug, info, warning, error, fatal, or panic
@@ -97,7 +97,7 @@ services:
     ## Storage Folders: "~" is a shortcut for your home directory, "." for the current directory
     volumes:
       # "/host/folder:/photoprism/folder"                # Example
-      - "~/Pictures:/photoprism/originals" # Original media files (DO NOT REMOVE)
+      - "/mnt/Photo:/photoprism/originals" # Original media files (DO NOT REMOVE)
       # - "/example/family:/photoprism/originals/family" # *Additional* media folders can be mounted like this
       # - "~/Import:/photoprism/import"                  # *Optional* base folder from which files can be imported to originals
       - "./storage:/photoprism/storage" # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
