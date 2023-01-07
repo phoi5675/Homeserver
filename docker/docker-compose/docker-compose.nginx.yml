@@ -5,10 +5,10 @@ services:
     image: nginx
     container_name: "nginx"
     ports:
-      - 7080:80
-      - 7443:443
+      - 8080:80
+      - 8443:443
     volumes:
-      - ./nginx:/etc/nginx/template
+      - ./docker/nginx:/etc/nginx/template
       - /etc/letsencrypt:/etc/letsencrypt
     environment:
       NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
