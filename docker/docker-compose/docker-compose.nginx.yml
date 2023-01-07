@@ -8,7 +8,10 @@ services:
       - 8080:80
       - 8443:443
     volumes:
-      - /etc/nginx/template:/etc/nginx/template
+      # - /etc/nginx/template:/etc/nginx/template
       - /etc/letsencrypt:/etc/letsencrypt
     environment:
-      NGINX_ENVSUBST_TEMPLATE_SUFFIX: ".conf"
+      - NGINX_ENVSUBST_TEMPLATE_SUFFIX=.conf
+      - dashboard=dashboard
+      - cloud=nextcloud-aio-mastercontainer
+      - photo=photo
