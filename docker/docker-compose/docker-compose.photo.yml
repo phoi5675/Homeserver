@@ -40,8 +40,8 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-    ports:
-      - "80:80" # HTTP port
+    # ports:
+    # - "80:80" # HTTP port
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTO_PWD} # initial superadmin password (minimum 8 characters)
