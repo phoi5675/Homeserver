@@ -1,6 +1,5 @@
 version: "3.8"
 
 networks:
-  docker_network:
   ext_network:
     external: true
