@@ -5,9 +5,6 @@ services:
     image: "jwilder/nginx-proxy:latest"
     container_name: "nginx"
     restart: "always"
-    networks:
-      ext_network:
-      default:
     ports:
       - 8080:8080
       - 8443:8443
