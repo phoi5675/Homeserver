@@ -4,6 +4,10 @@ services:
   nginx:
     image: nginx
     container_name: "nginx"
+    depends_on:
+      - ${dashboard}
+      - ${photo}
+      - ${cloud}
     networks:
       ext_network:
     ports:
