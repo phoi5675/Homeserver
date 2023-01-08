@@ -7,9 +7,11 @@ services:
     volumes:
       - /heimdall/volume:/config
     restart: unless-stopped
-    ports:
-      - 10000:80
+    expose:
+      - "80"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Seoul
+      - VIRTUAL_HOST=dashboard.phoiweb.com
+      - LETSENCRYPT_HOST=dashboard.phoiweb.com
