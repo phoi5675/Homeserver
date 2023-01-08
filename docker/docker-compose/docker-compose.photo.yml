@@ -77,8 +77,6 @@ services:
       ## Hardware Video Transcoding:
       PHOTOPRISM_FFMPEG_ENCODER: "software" # FFmpeg encoder ("software", "intel", "nvidia", "apple", "raspberry")
       PHOTOPRISM_FFMPEG_BITRATE: "32" # FFmpeg encoding bitrate limit in Mbit/s (default: 50)
-      VIRTUAL_HOST: "dashboard.phoiweb.com"
-      LETSENCRYPT_HOST: "dashboard.phoiweb.com"
 
       ## Run as a non-root user after initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
       # PHOTOPRISM_UID: 1000
