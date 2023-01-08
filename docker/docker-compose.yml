@@ -1,9 +1,5 @@
 version: "3.8"
 
-networks:
-  ext_network:
-    external: true
-
 # for test
 services:
   ubuntu:
