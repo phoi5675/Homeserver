@@ -8,3 +8,4 @@ networks:
 services:
   ubuntu:
     image: ubuntu
+    entrypoint: "/entrypoint.sh"
