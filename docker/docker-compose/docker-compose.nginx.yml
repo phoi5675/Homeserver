@@ -8,8 +8,8 @@ services:
       docker_network:
       ext_network:
     ports:
-      - 8080:80
-      - 8443:443
+      - 8080:8080
+      - 8443:8443
     volumes:
       - /docker/nginx:/etc/nginx/conf.d
       - /etc/letsencrypt:/etc/letsencrypt
