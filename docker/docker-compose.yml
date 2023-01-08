@@ -8,4 +8,6 @@ networks:
 services:
   ubuntu:
     image: ubuntu
+    volumes:
+      - "/entrypoint.sh:/entrypoint.sh"
     entrypoint: "/entrypoint.sh"
