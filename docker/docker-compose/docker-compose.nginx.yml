@@ -4,7 +4,7 @@ services:
   nginx:
     image: "jwilder/nginx-proxy:latest"
     container_name: "nginx"
-    restart: "anways"
+    restart: "always"
     networks:
       ext_network:
       default:
