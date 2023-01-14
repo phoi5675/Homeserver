@@ -7,6 +7,7 @@ volumes:
   npm-db:
   # drive for photoprism
   originals:
+    driver: local
     driver_opts:
       type: cifs
       o: "username=${SMB_ID},password=${SMB_PWD},rw"
