@@ -1,30 +1,4 @@
-version: "3.5"
-
-# Example Docker Compose config file for PhotoPrism (Linux / AMD64)
-#
-# Note:
-# - Hardware transcoding is only available for sponsors due to the high maintenance and support effort.
-# - Running PhotoPrism on a server with less than 4 GB of swap space or setting a memory/swap limit can cause unexpected
-#   restarts ("crashes"), for example, when the indexer temporarily needs more memory to process large files.
-# - If you install PhotoPrism on a public server outside your home network, please always run it behind a secure
-#   HTTPS reverse proxy such as Traefik or Caddy. Your files and passwords will otherwise be transmitted
-#   in clear text and can be intercepted by anyone, including your provider, hackers, and governments:
-#   https://docs.photoprism.app/getting-started/proxies/traefik/
-#
-# Setup Guides:
-# - https://docs.photoprism.app/getting-started/docker-compose/
-# - https://docs.photoprism.app/getting-started/raspberry-pi/
-#
-# Troubleshooting Checklists:
-# - https://docs.photoprism.app/getting-started/troubleshooting/
-# - https://docs.photoprism.app/getting-started/troubleshooting/docker/
-# - https://docs.photoprism.app/getting-started/troubleshooting/mariadb/
-#
-# CLI Commands:
-# - https://docs.photoprism.app/getting-started/docker-compose/#command-line-interface
-#
-# All commands may have to be prefixed with "sudo" when not running as root.
-# This will point the home directory shortcut ~ to /root in volume mounts.
+version: "3.8"
 
 services:
   photoprism:
@@ -40,8 +14,9 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-    expose:
-      - "80"
+    networks:
+      - frontend
+      - backend
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTO_PWD} # initial superadmin password (minimum 8 characters)
@@ -100,6 +75,8 @@ services:
     ## Never store database files on an unreliable device such as a USB flash drive, an SD card, or a shared network folder:
     volumes:
       - "/database:/var/lib/mysql" # DO NOT REMOVE
+    networks:
+      - backend
     environment:
       MARIADB_AUTO_UPGRADE: "1"
       MARIADB_INITDB_SKIP_TZINFO: "1"
@@ -121,10 +98,3 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "~/.docker/config.json:/config.json" # optional, for authentication if you have a Docker Hub account
-
-volumes:
-  originals:
-    driver_opts:
-      type: cifs
-      o: "username=${SMB_ID},password=${SMB_PWD},rw"
-      device: "${truenas_ip}"

@@ -1,12 +1,35 @@
 version: "3.8"
 
 services:
-  nginx:
-    image: "nginx:latest"
-    restart: "always"
+  npm-app:
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
     ports:
-      - 8080:8080
-      - 8443:8443
+      - "8080:8080"
+      - "81:81"
+      - "8443:8443"
+    environment:
+      - DB_MYSQL_HOST=npm-db
+      - DB_MYSQL_PORT=3306
+      - DB_MYSQL_USER=npm
+      - DB_MYSQL_PASSWORD=${NGINX_DB_PWD}
+      - DB_MYSQL_NAME=npm
     volumes:
-      - /docker/nginx/http.conf.template:/etc/nginx/templates/http.conf.template
-      - /etc/letsencrypt:/etc/letsencrypt
+      - npm-data:/data
+      - npm-ssl:/etc/letsencrypt
+    networks:
+      - frontend
+      - backend
+
+  npm-db:
+    image: jc21/mariadb-aria:latest
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${NGINX_DB_PWD}
+      - MYSQL_DATABASE=npm
+      - MYSQL_USER=npm
+      - MYSQL_PASSWORD=${NGINX_DB_PWD}
+    volumes:
+      - npm-db:/var/lib/mysql
+    networks:
+      - backend
