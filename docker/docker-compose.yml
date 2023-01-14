@@ -11,7 +11,7 @@ volumes:
     driver_opts:
       type: cifs
       o: "username=${SMB_ID},password=${SMB_PWD},rw"
-      device: "${truenas_ip}"
+      device: "//${truenas_ip}/Photo"
 
 networks:
   frontend:
