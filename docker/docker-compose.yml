@@ -2,6 +2,22 @@ networks:
   backend: null
   frontend: null
 services:
+  homer:
+    container_name: homer
+    environment:
+    - INIT_ASSETS=1
+    image: b4bz/homer
+    ports:
+    - 80:80
+    user: 1000:1000
+    volumes:
+    - homer-data:/www/assets
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    volumes:
+    - originals:/media
+    - jellyfin-config:/config
+    - jellyfin-cache:/cache
   mariadb:
     command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED
       --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512
@@ -138,6 +154,9 @@ services:
     - ~/.docker/config.json:/config.json
 version: '3.8'
 volumes:
+  homer-data: null
+  jellyfin-cache: null
+  jellyfin-config: null
   nextcloud-data: null
   nextcloud-db: null
   npm-data: null

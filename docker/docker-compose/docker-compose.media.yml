@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    volumes:
+      - originals:/media
+      - jellyfin-config:/config
+      - jellyfin-cache:/cache
