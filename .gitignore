@@ -3,3 +3,5 @@
 vpn_config.sh
 .env
 .env.secret
+
+.idea/
