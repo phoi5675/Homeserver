@@ -78,28 +78,11 @@ services:
       PHOTOPRISM_FFMPEG_ENCODER: "software" # FFmpeg encoder ("software", "intel", "nvidia", "apple", "raspberry")
       PHOTOPRISM_FFMPEG_BITRATE: "32" # FFmpeg encoding bitrate limit in Mbit/s (default: 50)
 
-      ## Run as a non-root user after initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
-      # PHOTOPRISM_UID: 1000
-      # PHOTOPRISM_GID: 1000
-      # PHOTOPRISM_UMASK: 0000
-    ## Start as non-root user before initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
-    # user: "1000:1000"
-    ## Share hardware devices with FFmpeg and TensorFlow (optional):
-    # devices:
-    #  - "/dev/dri:/dev/dri"                         # Intel QSV
-    #  - "/dev/nvidia0:/dev/nvidia0"                 # Nvidia CUDA
-    #  - "/dev/nvidiactl:/dev/nvidiactl"
-    #  - "/dev/nvidia-modeset:/dev/nvidia-modeset"
-    #  - "/dev/nvidia-nvswitchctl:/dev/nvidia-nvswitchctl"
-    #  - "/dev/nvidia-uvm:/dev/nvidia-uvm"
-    #  - "/dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools"
-    #  - "/dev/video11:/dev/video11"                 # Video4Linux Video Encode Device (h264_v4l2m2m)
     working_dir: "/photoprism" # do not change or remove
     ## Storage Folders: "~" is a shortcut for your home directory, "." for the current directory
     volumes:
       # "/host/folder:/photoprism/folder"                # Example
-      - "~/Pictures:/photoprism/originals" # Original media files (DO NOT REMOVE)
-      # - "/example/family:/photoprism/originals/family" # *Additional* media folders can be mounted like this
+      - "originals:/photoprism/originals"
       # - "~/Import:/photoprism/import"                  # *Optional* base folder from which files can be imported to originals
       - "/storage:/photoprism/storage" # *Writable* storage folder for cache, database, and sidecar files (DO NOT REMOVE)
 
