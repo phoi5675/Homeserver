@@ -104,8 +104,9 @@ services:
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-    expose:
-      - "80"
+    networks:
+      - frontend
+      - backend
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTO_PWD} # initial superadmin password (minimum 8 characters)
@@ -164,6 +165,8 @@ services:
     ## Never store database files on an unreliable device such as a USB flash drive, an SD card, or a shared network folder:
     volumes:
       - "/database:/var/lib/mysql" # DO NOT REMOVE
+    networks:
+      - backend
     environment:
       MARIADB_AUTO_UPGRADE: "1"
       MARIADB_INITDB_SKIP_TZINFO: "1"
