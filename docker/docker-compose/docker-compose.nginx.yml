@@ -3,11 +3,10 @@ version: "3.8"
 services:
   nginx:
     image: "nginx:latest"
-    container_name: "nginx"
     restart: "always"
     ports:
       - 8080:8080
       - 8443:8443
     volumes:
-      - "/docker/nginx:/etc/nginx/conf.d"
-      - "/etc/letsencrypt:/etc/letsencrypt"
+      - /docker/nginx/http.conf.template:/etc/nginx/templates/http.conf.template
+      - /etc/letsencrypt:/etc/letsencrypt
