@@ -9,6 +9,7 @@ services:
     - backend
     volumes:
     - media:/media
+    - nas:/nas
     - jellyfin-config:/config
     - jellyfin-cache:/cache
   nextcloud-app:
@@ -107,6 +108,12 @@ volumes:
     driver: local
     driver_opts:
       device: //${truenas_ip}/Photo
+      o: username=${SMB_ID},password=${SMB_PWD},rw
+      type: cifs
+  nas:
+    driver: local
+    driver_opts:
+      device: //${truenas_ip}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
   nextcloud-data: null

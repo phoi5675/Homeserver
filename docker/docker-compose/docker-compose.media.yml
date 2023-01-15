@@ -5,6 +5,7 @@ services:
     image: jellyfin/jellyfin:latest
     volumes:
       - media:/media
+      - nas:/nas
       - jellyfin-config:/config
       - jellyfin-cache:/cache
     networks:
