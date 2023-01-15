@@ -4,81 +4,84 @@ networks:
 services:
   jellyfin:
     image: jellyfin/jellyfin:latest
+    networks:
+    - frontend
+    - backend
     volumes:
-      - media:/media
-      - jellyfin-config:/config
-      - jellyfin-cache:/cache
+    - media:/media
+    - jellyfin-config:/config
+    - jellyfin-cache:/cache
   nextcloud-app:
     environment:
-      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_HOST=nextcloud-db
+    - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
+    - MYSQL_DATABASE=nextcloud
+    - MYSQL_USER=nextcloud
+    - MYSQL_HOST=nextcloud-db
     image: nextcloud
     networks:
-      - frontend
-      - backend
+    - frontend
+    - backend
     restart: always
     volumes:
-      - nextcloud-data:/var/www/html
+    - nextcloud-data:/var/www/html
   nextcloud-db:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     environment:
-      - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
+    - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PWD}
+    - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
+    - MYSQL_DATABASE=nextcloud
+    - MYSQL_USER=nextcloud
     image: mariadb
     networks:
-      - backend
+    - backend
     restart: always
     volumes:
-      - nextcloud-db:/var/lib/mysql
+    - nextcloud-db:/var/lib/mysql
   npm-app:
     environment:
-      - DB_MYSQL_HOST=npm-db
-      - DB_MYSQL_PORT=3306
-      - DB_MYSQL_USER=npm
-      - DB_MYSQL_PASSWORD=${NGINX_DB_PWD}
-      - DB_MYSQL_NAME=npm
+    - DB_MYSQL_HOST=npm-db
+    - DB_MYSQL_PORT=3306
+    - DB_MYSQL_USER=npm
+    - DB_MYSQL_PASSWORD=${NGINX_DB_PWD}
+    - DB_MYSQL_NAME=npm
     image: jc21/nginx-proxy-manager:latest
     networks:
-      - frontend
-      - backend
+    - frontend
+    - backend
     ports:
-      - 8080:8080
-      - 81:81
-      - 8443:8443
+    - 8080:8080
+    - 81:81
+    - 8443:8443
     restart: always
     volumes:
-      - npm-data:/data
-      - npm-ssl:/etc/letsencrypt
+    - npm-data:/data
+    - npm-ssl:/etc/letsencrypt
   npm-db:
     environment:
-      - MYSQL_ROOT_PASSWORD=${NGINX_DB_PWD}
-      - MYSQL_DATABASE=npm
-      - MYSQL_USER=npm
-      - MYSQL_PASSWORD=${NGINX_DB_PWD}
+    - MYSQL_ROOT_PASSWORD=${NGINX_DB_PWD}
+    - MYSQL_DATABASE=npm
+    - MYSQL_USER=npm
+    - MYSQL_PASSWORD=${NGINX_DB_PWD}
     image: jc21/mariadb-aria:latest
     networks:
-      - backend
+    - backend
     restart: always
     volumes:
-      - npm-db:/var/lib/mysql
+    - npm-db:/var/lib/mysql
   piwigo:
     container_name: piwigo
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Seoul
+    - PUID=1000
+    - PGID=1000
+    - TZ=Asia/Seoul
     image: lscr.io/linuxserver/piwigo:latest
     networks:
-      - frontend
-      - backend
+    - frontend
+    - backend
     restart: unless-stopped
     volumes:
-      - piwigo-config:/config
-      - media:/gallery
+    - piwigo-config:/config
+    - media:/gallery
   piwigo-db:
     environment:
       MYSQL_DATABASE: piwigo
@@ -87,11 +90,11 @@ services:
       MYSQL_USER: mysql
     image: mysql:latest
     networks:
-      - backend
+    - backend
     restart: always
     volumes:
-      - piwigo-db:/var/lib/mysql
-version: "3.8"
+    - piwigo-db:/var/lib/mysql
+version: '3.8'
 volumes:
   jellyfin-cache: null
   jellyfin-config: null
