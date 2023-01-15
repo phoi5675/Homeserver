@@ -11,8 +11,6 @@ services:
     volumes:
       - piwigo-config:/config
       - media:/gallery
-    ports:
-      - 80:80
     restart: unless-stopped
     networks:
       - frontend

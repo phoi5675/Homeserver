@@ -7,8 +7,6 @@ services:
     environment:
     - INIT_ASSETS=1
     image: b4bz/homer
-    ports:
-    - 80:80
     user: 1000:1000
     volumes:
     - homer-data:/www/assets
@@ -85,8 +83,6 @@ services:
     networks:
     - frontend
     - backend
-    ports:
-    - 80:80
     restart: unless-stopped
     volumes:
     - piwigo-config:/config

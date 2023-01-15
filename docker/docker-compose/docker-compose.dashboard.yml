@@ -6,8 +6,6 @@ services:
     container_name: homer
     volumes:
       - homer-data:/www/assets
-    ports:
-      - 80:80
     user: 1000:1000 # default
     environment:
       - INIT_ASSETS=1 # default
