@@ -73,13 +73,16 @@ services:
     - photoview_db
     environment:
     - PHOTOVIEW_DATABASE_DRIVER=mysql
-    - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(web-photoview_db-1)/photoview
+    - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(photoview_db)/photoview
     - PHOTOVIEW_LISTEN_IP=photoview
     - PHOTOVIEW_LISTEN_PORT=80
     - PHOTOVIEW_MEDIA_CACHE=/app/cache
     - GODEBUG=asyncpreemptoff=1
     - MAPBOX_TOKEN=${MAP_TOKEN}
     image: viktorstrate/photoview:2
+    networks:
+    - frontend
+    - backend
     restart: always
     volumes:
     - photoview_api_cache:/app/cache
