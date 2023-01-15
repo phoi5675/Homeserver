@@ -5,169 +5,119 @@ services:
   homer:
     container_name: homer
     environment:
-      - INIT_ASSETS=1
+    - INIT_ASSETS=1
     image: b4bz/homer
     ports:
-      - 80:80
+    - 80:80
     user: 1000:1000
     volumes:
-      - homer-data:/www/assets
+    - homer-data:/www/assets
   jellyfin:
     image: jellyfin/jellyfin:latest
     volumes:
-      - media:/media
-      - jellyfin-config:/config
-      - jellyfin-cache:/cache
-  mariadb:
-    command:
-      mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED
-      --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512
-      --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
-    environment:
-      MARIADB_AUTO_UPGRADE: "1"
-      MARIADB_DATABASE: photoprism
-      MARIADB_INITDB_SKIP_TZINFO: "1"
-      MARIADB_PASSWORD: insecure
-      MARIADB_ROOT_PASSWORD: insecure
-      MARIADB_USER: photoprism
-    image: mariadb:10.10
-    networks:
-      - backend
-    restart: unless-stopped
-    security_opt:
-      - seccomp:unconfined
-      - apparmor:unconfined
-    volumes:
-      - /database:/var/lib/mysql
+    - media:/media
+    - jellyfin-config:/config
+    - jellyfin-cache:/cache
   nextcloud-app:
     environment:
-      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_HOST=nextcloud-db
+    - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
+    - MYSQL_DATABASE=nextcloud
+    - MYSQL_USER=nextcloud
+    - MYSQL_HOST=nextcloud-db
     image: nextcloud
     networks:
-      - frontend
-      - backend
+    - frontend
+    - backend
     restart: always
     volumes:
-      - nextcloud-data:/var/www/html
+    - nextcloud-data:/var/www/html
   nextcloud-db:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     environment:
-      - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
+    - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PWD}
+    - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
+    - MYSQL_DATABASE=nextcloud
+    - MYSQL_USER=nextcloud
     image: mariadb
     networks:
-      - backend
+    - backend
     restart: always
     volumes:
-      - nextcloud-db:/var/lib/mysql
+    - nextcloud-db:/var/lib/mysql
   npm-app:
     environment:
-      - DB_MYSQL_HOST=npm-db
-      - DB_MYSQL_PORT=3306
-      - DB_MYSQL_USER=npm
-      - DB_MYSQL_PASSWORD=${NGINX_DB_PWD}
-      - DB_MYSQL_NAME=npm
+    - DB_MYSQL_HOST=npm-db
+    - DB_MYSQL_PORT=3306
+    - DB_MYSQL_USER=npm
+    - DB_MYSQL_PASSWORD=${NGINX_DB_PWD}
+    - DB_MYSQL_NAME=npm
     image: jc21/nginx-proxy-manager:latest
     networks:
-      - frontend
-      - backend
+    - frontend
+    - backend
     ports:
-      - 8080:8080
-      - 81:81
-      - 8443:8443
+    - 8080:8080
+    - 81:81
+    - 8443:8443
     restart: always
     volumes:
-      - npm-data:/data
-      - npm-ssl:/etc/letsencrypt
+    - npm-data:/data
+    - npm-ssl:/etc/letsencrypt
   npm-db:
     environment:
-      - MYSQL_ROOT_PASSWORD=${NGINX_DB_PWD}
-      - MYSQL_DATABASE=npm
-      - MYSQL_USER=npm
-      - MYSQL_PASSWORD=${NGINX_DB_PWD}
+    - MYSQL_ROOT_PASSWORD=${NGINX_DB_PWD}
+    - MYSQL_DATABASE=npm
+    - MYSQL_USER=npm
+    - MYSQL_PASSWORD=${NGINX_DB_PWD}
     image: jc21/mariadb-aria:latest
     networks:
-      - backend
+    - backend
     restart: always
     volumes:
-      - npm-db:/var/lib/mysql
-  photoprism:
-    container_name: ${photo}
-    depends_on:
-      - mariadb
+    - npm-db:/var/lib/mysql
+  piwigo:
+    container_name: piwigo
     environment:
-      PHOTOPRISM_ADMIN_PASSWORD: ${PHOTO_PWD}
-      PHOTOPRISM_ADMIN_USER: admin
-      PHOTOPRISM_AUTH_MODE: password
-      PHOTOPRISM_DATABASE_DRIVER: mysql
-      PHOTOPRISM_DATABASE_NAME: photoprism
-      PHOTOPRISM_DATABASE_PASSWORD: insecure
-      PHOTOPRISM_DATABASE_SERVER: mariadb:3306
-      PHOTOPRISM_DATABASE_USER: photoprism
-      PHOTOPRISM_DETECT_NSFW: "false"
-      PHOTOPRISM_DISABLE_CHOWN: "false"
-      PHOTOPRISM_DISABLE_CLASSIFICATION: "false"
-      PHOTOPRISM_DISABLE_FACES: "false"
-      PHOTOPRISM_DISABLE_RAW: "false"
-      PHOTOPRISM_DISABLE_SETTINGS: "false"
-      PHOTOPRISM_DISABLE_TENSORFLOW: "false"
-      PHOTOPRISM_DISABLE_WEBDAV: "false"
-      PHOTOPRISM_EXPERIMENTAL: "false"
-      PHOTOPRISM_FFMPEG_BITRATE: "32"
-      PHOTOPRISM_FFMPEG_ENCODER: software
-      PHOTOPRISM_HTTP_COMPRESSION: gzip
-      PHOTOPRISM_JPEG_QUALITY: 85
-      PHOTOPRISM_LOG_LEVEL: info
-      PHOTOPRISM_ORIGINALS_LIMIT: 5000
-      PHOTOPRISM_RAW_PRESETS: "false"
-      PHOTOPRISM_READONLY: "false"
-      PHOTOPRISM_SITE_AUTHOR: ""
-      PHOTOPRISM_SITE_CAPTION: AI-Powered Photos App
-      PHOTOPRISM_SITE_DESCRIPTION: ""
-      PHOTOPRISM_SITE_URL: http://${photo}:80/
-      PHOTOPRISM_UPLOAD_NSFW: "true"
-    image: photoprism/photoprism:latest
+    - PUID=1000
+    - PGID=1000
+    - TZ=Asia/Seoul
+    image: lscr.io/linuxserver/piwigo:latest
     networks:
-      - frontend
-      - backend
-    security_opt:
-      - seccomp:unconfined
-      - apparmor:unconfined
-    volumes:
-      - media:/photoprism/originals
-      - /storage:/photoprism/storage
-    working_dir: /photoprism
-  watchtower:
-    environment:
-      WATCHTOWER_CLEANUP: "true"
-      WATCHTOWER_POLL_INTERVAL: 7200
-    image: containrrr/watchtower
-    profiles:
-      - update
+    - frontend
+    - backend
+    ports:
+    - 80:80
     restart: unless-stopped
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ~/.docker/config.json:/config.json
-version: "3.8"
+    - piwigo-config:/config
+    - media:/gallery
+  piwigo-db:
+    environment:
+      MYSQL_DATABASE: piwigo
+      MYSQL_PASSWORD: mysql
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_USER: mysql
+    image: mysql:latest
+    networks:
+    - backend
+    restart: always
+    volumes:
+    - piwigo-db:/var/lib/mysql
+version: '3.8'
 volumes:
   homer-data: null
   jellyfin-cache: null
   jellyfin-config: null
-  piwigo-config:
-  piwigo-db:
-  nextcloud-data: null
-  nextcloud-db: null
-  npm-data: null
-  npm-db: null
-  npm-ssl: null
   media:
     driver: local
     driver_opts:
       device: //${truenas_ip}/Photo
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
+  nextcloud-data: null
+  nextcloud-db: null
+  npm-data: null
+  npm-db: null
+  npm-ssl: null
+  piwigo-config: null
+  piwigo-db: null
