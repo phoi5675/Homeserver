@@ -10,7 +10,7 @@ services:
       - TZ=Asia/Seoul
     volumes:
       - piwigo-config:/config
-      - media:/gallery
+      - media:/app/www/public/galleries
     restart: unless-stopped
     networks:
       - frontend

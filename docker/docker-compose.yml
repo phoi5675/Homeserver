@@ -81,7 +81,7 @@ services:
     restart: unless-stopped
     volumes:
     - piwigo-config:/config
-    - media:/gallery
+    - media:/app/www/public/galleries
   piwigo-db:
     environment:
       MYSQL_DATABASE: piwigo
