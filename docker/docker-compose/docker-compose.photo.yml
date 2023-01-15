@@ -23,7 +23,7 @@ services:
 
     environment:
       - PHOTOVIEW_DATABASE_DRIVER=mysql
-      - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(photoview_db)/photoview
+      - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(web-photoview_db-1)/photoview
       - PHOTOVIEW_LISTEN_IP=photoview
       - PHOTOVIEW_LISTEN_PORT=80
       - PHOTOVIEW_MEDIA_CACHE=/app/cache
