@@ -1,29 +1,47 @@
-version: "3.8"
+version: "3"
 
 services:
-  piwigo:
-    image: lscr.io/linuxserver/piwigo:latest
-    container_name: piwigo
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Asia/Seoul
-    volumes:
-      - piwigo-config:/config
-      - media:/app/www/public/galleries
-    restart: unless-stopped
-    networks:
-      - frontend
-      - backend
-  piwigo-db:
-    image: mysql:latest
+  photoview_db:
+    image: mariadb:10.5
     restart: always
+    environment:
+      - MYSQL_DATABASE=photoview
+      - MYSQL_USER=photoview
+      - MYSQL_PASSWORD=photosecret
+      - MYSQL_RANDOM_ROOT_PASSWORD=1
+    volumes:
+      - photoview_db_data:/var/lib/mysql
     networks:
       - backend
+
+  photoview:
+    image: viktorstrate/photoview:2
+    restart: always
+
+    depends_on:
+      - photoview_db
+
     environment:
-      MYSQL_DATABASE: "piwigo"
-      MYSQL_USER: "mysql"
-      MYSQL_PASSWORD: "mysql"
-      MYSQL_ROOT_PASSWORD: "mysql"
+      - PHOTOVIEW_DATABASE_DRIVER=mysql
+      - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(db)/photoview
+      - PHOTOVIEW_LISTEN_IP=photoview
+      - PHOTOVIEW_LISTEN_PORT=80
+      - PHOTOVIEW_MEDIA_CACHE=/app/cache
+
+      # Optional: If you are using Samba/CIFS-Share and experience problems with "directory not found"
+      # Enable the following Godebug
+      - GODEBUG=asyncpreemptoff=1
+
+      # Optional: To enable map related features, you need to create a mapbox token.
+      # A token can be generated for free here https://account.mapbox.com/access-tokens/
+      # It's a good idea to limit the scope of the token to your own domain, to prevent others from using it.
+      - MAPBOX_TOKEN=${MAP_TOKEN}
+
     volumes:
-      - piwigo-db:/var/lib/mysql
+      - photoview_api_cache:/app/cache
+
+      # Change This: to the directory where your photos are located on your server.
+      # If the photos are located at `/home/user/photos`, then change this value
+      # to the following: `/home/user/photos:/photos:ro`.
+      # You can mount multiple paths, if your photos are spread across multiple directories.
+      - media:/photos:ro

@@ -68,32 +68,34 @@ services:
     restart: always
     volumes:
     - npm-db:/var/lib/mysql
-  piwigo:
-    container_name: piwigo
+  photoview:
+    depends_on:
+    - photoview_db
     environment:
-    - PUID=1000
-    - PGID=1000
-    - TZ=Asia/Seoul
-    image: lscr.io/linuxserver/piwigo:latest
-    networks:
-    - frontend
-    - backend
-    restart: unless-stopped
+    - PHOTOVIEW_DATABASE_DRIVER=mysql
+    - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(db)/photoview
+    - PHOTOVIEW_LISTEN_IP=photoview
+    - PHOTOVIEW_LISTEN_PORT=80
+    - PHOTOVIEW_MEDIA_CACHE=/app/cache
+    - GODEBUG=asyncpreemptoff=1
+    - MAPBOX_TOKEN=${MAP_TOKEN}
+    image: viktorstrate/photoview:2
+    restart: always
     volumes:
-    - piwigo-config:/config
-    - media:/app/www/public/galleries
-  piwigo-db:
+    - photoview_api_cache:/app/cache
+    - media:/photos:ro
+  photoview_db:
     environment:
-      MYSQL_DATABASE: piwigo
-      MYSQL_PASSWORD: mysql
-      MYSQL_ROOT_PASSWORD: mysql
-      MYSQL_USER: mysql
-    image: mysql:latest
+    - MYSQL_DATABASE=photoview
+    - MYSQL_USER=photoview
+    - MYSQL_PASSWORD=photosecret
+    - MYSQL_RANDOM_ROOT_PASSWORD=1
+    image: mariadb:10.5
     networks:
     - backend
     restart: always
     volumes:
-    - piwigo-db:/var/lib/mysql
+    - photoview_db_data:/var/lib/mysql
 version: '3.8'
 volumes:
   jellyfin-cache: null
@@ -109,5 +111,5 @@ volumes:
   npm-data: null
   npm-db: null
   npm-ssl: null
-  piwigo-config: null
-  piwigo-db: null
+  photoview_api_cache: null
+  photoview_db_data: null
