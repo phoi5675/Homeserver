@@ -17,7 +17,6 @@ services:
   photoview:
     image: viktorstrate/photoview:2
     restart: always
-
     depends_on:
       - photoview_db
     networks:
