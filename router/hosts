@@ -1,0 +1,6 @@
+172.31.0.1 router
+172.31.0.2 Minjaes-MBP
+172.31.0.99 proxmox
+172.31.0.102 windows
+172.31.0.103 truenas
+172.31.0.104 docker
