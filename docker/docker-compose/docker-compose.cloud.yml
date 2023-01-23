@@ -1,13 +1,10 @@
 version: "3.8"
 
 services:
-  #############################
-  #                           #
-  #         NEXTCLOUD         #
-  #                           #
-  #############################
   nextcloud-app:
-    image: nextcloud
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/cloud.Dockerfile
     restart: always
     volumes:
       - nextcloud-data:/var/www/html

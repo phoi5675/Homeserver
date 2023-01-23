@@ -14,12 +14,14 @@ services:
     - jellyfin-config:/config
     - jellyfin-cache:/cache
   nextcloud-app:
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/cloud.Dockerfile
     environment:
     - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
     - MYSQL_DATABASE=nextcloud
     - MYSQL_USER=nextcloud
     - MYSQL_HOST=nextcloud-db
-    image: nextcloud
     networks:
     - frontend
     - backend
