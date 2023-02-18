@@ -13,34 +13,6 @@ services:
     - nas:/nas
     - jellyfin-config:/config
     - jellyfin-cache:/cache
-  nextcloud-app:
-    build:
-      context: .
-      dockerfile: ./Dockerfiles/cloud.Dockerfile
-    environment:
-    - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-    - MYSQL_DATABASE=nextcloud
-    - MYSQL_USER=nextcloud
-    - MYSQL_HOST=nextcloud-db
-    networks:
-    - frontend
-    - backend
-    restart: always
-    volumes:
-    - nextcloud-data:/var/www/html
-  nextcloud-db:
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    environment:
-    - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PWD}
-    - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-    - MYSQL_DATABASE=nextcloud
-    - MYSQL_USER=nextcloud
-    image: mariadb
-    networks:
-    - backend
-    restart: always
-    volumes:
-    - nextcloud-db:/var/lib/mysql
   npm-app:
     environment:
     - DB_MYSQL_HOST=npm-db
@@ -72,6 +44,65 @@ services:
     restart: always
     volumes:
     - npm-db:/var/lib/mysql
+  owncloud:
+    container_name: owncloud_server
+    depends_on:
+    - owncloud-mariadb
+    - owncloud-redis
+    environment:
+    - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
+    - OWNCLOUD_TRUSTED_DOMAINS=${OWNCLOUD_TRUSTED_DOMAINS}
+    - OWNCLOUD_DB_TYPE=mysql
+    - OWNCLOUD_DB_NAME=owncloud
+    - OWNCLOUD_DB_USERNAME=owncloud
+    - OWNCLOUD_DB_PASSWORD=owncloud
+    - OWNCLOUD_DB_HOST=mariadb
+    - OWNCLOUD_ADMIN_USERNAME=${OWNCLOUD_ADMIN_USERNAME}
+    - OWNCLOUD_ADMIN_PASSWORD=${OWNCLOUD_ADMIN_PASSWORD}
+    - OWNCLOUD_MYSQL_UTF8MB4=true
+    - OWNCLOUD_REDIS_ENABLED=true
+    - OWNCLOUD_REDIS_HOST=redis
+    healthcheck:
+      interval: 30s
+      retries: 5
+      test:
+      - CMD
+      - /usr/bin/healthcheck
+      timeout: 10s
+    image: owncloud/server:${OWNCLOUD_VERSION}
+    networks:
+    - backend
+    - frontend
+    restart: always
+    volumes:
+    - owncloud-files:/mnt/data
+  owncloud-mariadb:
+    command:
+    - --max-allowed-packet=128M
+    - --innodb-log-file-size=64M
+    container_name: owncloud_mariadb
+    environment:
+    - MYSQL_ROOT_PASSWORD=owncloud
+    - MYSQL_USER=owncloud
+    - MYSQL_PASSWORD=owncloud
+    - MYSQL_DATABASE=owncloud
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test:
+      - CMD
+      - mysqladmin
+      - ping
+      - -u
+      - root
+      - --password=owncloud
+      timeout: 5s
+    image: mariadb:10.9
+    networks:
+    - backend
+    restart: always
+    volumes:
+    - owncloud-mysql:/var/lib/mysql
   photoview:
     depends_on:
     - photoview_db
@@ -103,6 +134,25 @@ services:
     restart: always
     volumes:
     - photoview_db_data:/var/lib/mysql
+  redis:
+    command:
+    - --databases
+    - '1'
+    container_name: owncloud_redis
+    healthcheck:
+      interval: 10s
+      retries: 5
+      test:
+      - CMD
+      - redis-cli
+      - ping
+      timeout: 5s
+    image: redis:6
+    networks:
+    - backend
+    restart: always
+    volumes:
+    - owncloud-redis:/data
   vikunja-api:
     depends_on:
     - vikunja-db
@@ -157,10 +207,11 @@ volumes:
       device: //${truenas_ip}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
-  nextcloud-data: null
-  nextcloud-db: null
   npm-data: null
   npm-db: null
   npm-ssl: null
+  owncloud-files: null
+  owncloud-mysql: null
+  owncloud-redis: null
   photoview_api_cache: null
   photoview_db_data: null

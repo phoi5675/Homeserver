@@ -1,32 +1,69 @@
 version: "3.8"
 
 services:
-  nextcloud-app:
-    build:
-      context: .
-      dockerfile: ./Dockerfiles/cloud.Dockerfile
+  owncloud:
+    image: owncloud/server:${OWNCLOUD_VERSION}
+    container_name: owncloud_server
     restart: always
-    volumes:
-      - nextcloud-data:/var/www/html
+
+    depends_on:
+      - owncloud-mariadb
+      - owncloud-redis
     environment:
-      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_HOST=nextcloud-db
+      - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
+      - OWNCLOUD_TRUSTED_DOMAINS=${OWNCLOUD_TRUSTED_DOMAINS}
+      - OWNCLOUD_DB_TYPE=mysql
+      - OWNCLOUD_DB_NAME=owncloud
+      - OWNCLOUD_DB_USERNAME=owncloud
+      - OWNCLOUD_DB_PASSWORD=owncloud
+      - OWNCLOUD_DB_HOST=mariadb
+      - OWNCLOUD_ADMIN_USERNAME=${OWNCLOUD_ADMIN_USERNAME}
+      - OWNCLOUD_ADMIN_PASSWORD=${OWNCLOUD_ADMIN_PASSWORD}
+      - OWNCLOUD_MYSQL_UTF8MB4=true
+      - OWNCLOUD_REDIS_ENABLED=true
+      - OWNCLOUD_REDIS_HOST=redis
+    healthcheck:
+      test: ["CMD", "/usr/bin/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     networks:
+      - backend
       - frontend
+    volumes:
+      - owncloud-files:/mnt/data
+
+  owncloud-mariadb:
+    image: mariadb:10.9 # minimum required ownCloud version is 10.9
+    container_name: owncloud_mariadb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=owncloud
+      - MYSQL_USER=owncloud
+      - MYSQL_PASSWORD=owncloud
+      - MYSQL_DATABASE=owncloud
+    command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "root", "--password=owncloud"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - owncloud-mysql:/var/lib/mysql
+    networks:
       - backend
 
-  nextcloud-db:
-    image: mariadb
+  redis:
+    image: redis:6
+    container_name: owncloud_redis
     restart: always
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    command: ["--databases", "1"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
-      - nextcloud-db:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
+      - owncloud-redis:/data
     networks:
       - backend

@@ -1,0 +1,23 @@
+volumes:
+  jellyfin-cache: null
+  jellyfin-config: null
+  media:
+    driver: local
+    driver_opts:
+      device: //${truenas_ip}/Photo
+      o: username=${SMB_ID},password=${SMB_PWD},rw
+      type: cifs
+  nas:
+    driver: local
+    driver_opts:
+      device: //${truenas_ip}/NAS
+      o: username=${SMB_ID},password=${SMB_PWD},rw
+      type: cifs
+  npm-data: null
+  npm-db: null
+  npm-ssl: null
+  owncloud-files: null
+  owncloud-mysql: null
+  owncloud-redis: null
+  photoview_api_cache: null
+  photoview_db_data: null
