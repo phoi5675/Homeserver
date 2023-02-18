@@ -103,6 +103,46 @@ services:
     restart: always
     volumes:
     - photoview_db_data:/var/lib/mysql
+  vikunja-api:
+    depends_on:
+    - vikunja-db
+    environment:
+      VIKUNJA_DATABASE_DATABASE: vikunja
+      VIKUNJA_DATABASE_HOST: vikunja-db
+      VIKUNJA_DATABASE_PASSWORD: secret
+      VIKUNJA_DATABASE_TYPE: mysql
+      VIKUNJA_DATABASE_USER: vikunja
+      VIKUNJA_SERVICE_FRONTENDURL: https://vikunja.phoiweb.com:8443/
+      VIKUNJA_SERVICE_JWTSECRET: jwtsecret
+    image: vikunja/api
+    networks:
+    - backend
+    ports:
+    - 3456:3456
+    restart: unless-stopped
+    volumes:
+    - ./files:/app/vikunja/files
+  vikunja-db:
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_DATABASE: vikunja
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: supersecret
+      MYSQL_USER: vikunja
+    image: mariadb:10
+    networks:
+    - backend
+    restart: unless-stopped
+    volumes:
+    - ./vikunja-db:/var/lib/mysql
+  vikunja-frontend:
+    environment:
+      VIKUNJA_API_URL: http://172.31.0.21:3456/api/v1
+    image: vikunja/frontend
+    networks:
+    - frontend
+    - backend
+    restart: unless-stopped
 version: '3.8'
 volumes:
   jellyfin-cache: null
