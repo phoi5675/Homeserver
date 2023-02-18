@@ -167,6 +167,7 @@ services:
     image: vikunja/api
     networks:
     - backend
+    - frontend
     restart: unless-stopped
     volumes:
     - ./files:/app/vikunja/files
