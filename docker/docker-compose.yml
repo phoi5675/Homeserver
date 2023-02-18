@@ -5,157 +5,157 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:latest
     networks:
-    - frontend
-    - backend
+      - frontend
+      - backend
     restart: always
     volumes:
-    - media:/media
-    - nas:/nas
-    - jellyfin-config:/config
-    - jellyfin-cache:/cache
+      - media:/media
+      - nas:/nas
+      - jellyfin-config:/config
+      - jellyfin-cache:/cache
   npm-app:
     environment:
-    - DB_MYSQL_HOST=npm-db
-    - DB_MYSQL_PORT=3306
-    - DB_MYSQL_USER=npm
-    - DB_MYSQL_PASSWORD=${NGINX_DB_PWD}
-    - DB_MYSQL_NAME=npm
+      - DB_MYSQL_HOST=npm-db
+      - DB_MYSQL_PORT=3306
+      - DB_MYSQL_USER=npm
+      - DB_MYSQL_PASSWORD=${NGINX_DB_PWD}
+      - DB_MYSQL_NAME=npm
     image: jc21/nginx-proxy-manager:latest
     networks:
-    - frontend
-    - backend
+      - frontend
+      - backend
     ports:
-    - 8080:8080
-    - 81:81
-    - 8443:8443
+      - 8080:8080
+      - 81:81
+      - 8443:8443
     restart: always
     volumes:
-    - npm-data:/data
-    - npm-ssl:/etc/letsencrypt
+      - npm-data:/data
+      - npm-ssl:/etc/letsencrypt
   npm-db:
     environment:
-    - MYSQL_ROOT_PASSWORD=${NGINX_DB_PWD}
-    - MYSQL_DATABASE=npm
-    - MYSQL_USER=npm
-    - MYSQL_PASSWORD=${NGINX_DB_PWD}
+      - MYSQL_ROOT_PASSWORD=${NGINX_DB_PWD}
+      - MYSQL_DATABASE=npm
+      - MYSQL_USER=npm
+      - MYSQL_PASSWORD=${NGINX_DB_PWD}
     image: jc21/mariadb-aria:latest
     networks:
-    - backend
+      - backend
     restart: always
     volumes:
-    - npm-db:/var/lib/mysql
+      - npm-db:/var/lib/mysql
   owncloud:
     container_name: owncloud_server
     depends_on:
-    - owncloud-mariadb
-    - owncloud-redis
+      - owncloud-mariadb
+      - owncloud-redis
     environment:
-    - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
-    - OWNCLOUD_TRUSTED_DOMAINS=${OWNCLOUD_TRUSTED_DOMAINS}
-    - OWNCLOUD_DB_TYPE=mysql
-    - OWNCLOUD_DB_NAME=owncloud
-    - OWNCLOUD_DB_USERNAME=owncloud
-    - OWNCLOUD_DB_PASSWORD=owncloud
-    - OWNCLOUD_DB_HOST=mariadb
-    - OWNCLOUD_ADMIN_USERNAME=${OWNCLOUD_ADMIN_USERNAME}
-    - OWNCLOUD_ADMIN_PASSWORD=${OWNCLOUD_ADMIN_PASSWORD}
-    - OWNCLOUD_MYSQL_UTF8MB4=true
-    - OWNCLOUD_REDIS_ENABLED=true
-    - OWNCLOUD_REDIS_HOST=redis
+      - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
+      - OWNCLOUD_TRUSTED_DOMAINS=${OWNCLOUD_TRUSTED_DOMAINS}
+      - OWNCLOUD_DB_TYPE=mysql
+      - OWNCLOUD_DB_NAME=owncloud
+      - OWNCLOUD_DB_USERNAME=owncloud
+      - OWNCLOUD_DB_PASSWORD=owncloud
+      - OWNCLOUD_DB_HOST=mariadb
+      - OWNCLOUD_ADMIN_USERNAME=${OWNCLOUD_ADMIN_USERNAME}
+      - OWNCLOUD_ADMIN_PASSWORD=${OWNCLOUD_ADMIN_PASSWORD}
+      - OWNCLOUD_MYSQL_UTF8MB4=true
+      - OWNCLOUD_REDIS_ENABLED=true
+      - OWNCLOUD_REDIS_HOST=redis
     healthcheck:
       interval: 30s
       retries: 5
       test:
-      - CMD
-      - /usr/bin/healthcheck
+        - CMD
+        - /usr/bin/healthcheck
       timeout: 10s
     image: owncloud/server:${OWNCLOUD_VERSION}
     networks:
-    - backend
-    - frontend
+      - backend
+      - frontend
     restart: always
     volumes:
-    - owncloud-files:/mnt/data
+      - owncloud-files:/mnt/data
   owncloud-mariadb:
     command:
-    - --max-allowed-packet=128M
-    - --innodb-log-file-size=64M
+      - --max-allowed-packet=128M
+      - --innodb-log-file-size=64M
     container_name: owncloud_mariadb
     environment:
-    - MYSQL_ROOT_PASSWORD=owncloud
-    - MYSQL_USER=owncloud
-    - MYSQL_PASSWORD=owncloud
-    - MYSQL_DATABASE=owncloud
+      - MYSQL_ROOT_PASSWORD=owncloud
+      - MYSQL_USER=owncloud
+      - MYSQL_PASSWORD=owncloud
+      - MYSQL_DATABASE=owncloud
     healthcheck:
       interval: 10s
       retries: 5
       test:
-      - CMD
-      - mysqladmin
-      - ping
-      - -u
-      - root
-      - --password=owncloud
+        - CMD
+        - mysqladmin
+        - ping
+        - -u
+        - root
+        - --password=owncloud
       timeout: 5s
     image: mariadb:10.9
     networks:
-    - backend
+      - backend
     restart: always
     volumes:
-    - owncloud-mysql:/var/lib/mysql
+      - owncloud-mysql:/var/lib/mysql
   photoview:
     depends_on:
-    - photoview_db
+      - photoview_db
     environment:
-    - PHOTOVIEW_DATABASE_DRIVER=mysql
-    - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(photoview_db)/photoview
-    - PHOTOVIEW_LISTEN_IP=photoview
-    - PHOTOVIEW_LISTEN_PORT=80
-    - PHOTOVIEW_MEDIA_CACHE=/app/cache
-    - GODEBUG=asyncpreemptoff=1
-    - MAPBOX_TOKEN=${MAP_TOKEN}
+      - PHOTOVIEW_DATABASE_DRIVER=mysql
+      - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(photoview_db)/photoview
+      - PHOTOVIEW_LISTEN_IP=photoview
+      - PHOTOVIEW_LISTEN_PORT=80
+      - PHOTOVIEW_MEDIA_CACHE=/app/cache
+      - GODEBUG=asyncpreemptoff=1
+      - MAPBOX_TOKEN=${MAP_TOKEN}
     image: viktorstrate/photoview:2
     networks:
-    - frontend
-    - backend
+      - frontend
+      - backend
     restart: always
     volumes:
-    - photoview_api_cache:/app/cache
-    - media:/photos:ro
+      - photoview_api_cache:/app/cache
+      - media:/photos:ro
   photoview_db:
     environment:
-    - MYSQL_DATABASE=photoview
-    - MYSQL_USER=photoview
-    - MYSQL_PASSWORD=photosecret
-    - MYSQL_RANDOM_ROOT_PASSWORD=1
+      - MYSQL_DATABASE=photoview
+      - MYSQL_USER=photoview
+      - MYSQL_PASSWORD=photosecret
+      - MYSQL_RANDOM_ROOT_PASSWORD=1
     image: mariadb:10.5
     networks:
-    - backend
+      - backend
     restart: always
     volumes:
-    - photoview_db_data:/var/lib/mysql
+      - photoview_db_data:/var/lib/mysql
   redis:
     command:
-    - --databases
-    - '1'
+      - --databases
+      - "1"
     container_name: owncloud_redis
     healthcheck:
       interval: 10s
       retries: 5
       test:
-      - CMD
-      - redis-cli
-      - ping
+        - CMD
+        - redis-cli
+        - ping
       timeout: 5s
     image: redis:6
     networks:
-    - backend
+      - backend
     restart: always
     volumes:
-    - owncloud-redis:/data
+      - owncloud-redis:/data
   vikunja-api:
     depends_on:
-    - vikunja-db
+      - vikunja-db
     environment:
       VIKUNJA_DATABASE_DATABASE: vikunja
       VIKUNJA_DATABASE_HOST: vikunja-db
@@ -166,10 +166,10 @@ services:
       VIKUNJA_SERVICE_JWTSECRET: jwtsecret
     image: vikunja/api
     networks:
-    - backend
+      - backend
     restart: unless-stopped
     volumes:
-    - ./files:/app/vikunja/files
+      - ./files:/app/vikunja/files
   vikunja-db:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
@@ -179,32 +179,32 @@ services:
       MYSQL_USER: vikunja
     image: mariadb:10
     networks:
-    - backend
+      - backend
     restart: unless-stopped
     volumes:
-    - ./vikunja-db:/var/lib/mysql
+      - ./vikunja-db:/var/lib/mysql
   vikunja-frontend:
     environment:
       VIKUNJA_API_URL: http://web-vikunja-api:3456/api/v1
     image: vikunja/frontend
     networks:
-    - frontend
-    - backend
+      - frontend
+      - backend
     restart: unless-stopped
-version: '3.8'
+version: "3.8"
 volumes:
   jellyfin-cache: null
   jellyfin-config: null
   media:
     driver: local
     driver_opts:
-      device: //${truenas_ip}/Photo
+      device: //${TRUENAS_IP}/Photo
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
   nas:
     driver: local
     driver_opts:
-      device: //${truenas_ip}/NAS
+      device: //${TRUENAS_IP}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
   npm-data: null
