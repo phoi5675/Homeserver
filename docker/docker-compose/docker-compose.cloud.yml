@@ -35,7 +35,7 @@ services:
 
   owncloud-mariadb:
     image: mariadb:10.9 # minimum required ownCloud version is 10.9
-    container_name: owncloud_mariadb
+    container_name: owncloud-mariadb
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=owncloud
@@ -53,9 +53,9 @@ services:
     networks:
       - backend
 
-  redis:
+  owncloud-redis:
     image: redis:6
-    container_name: owncloud_redis
+    container_name: owncloud-redis
     restart: always
     command: ["--databases", "1"]
     healthcheck:
