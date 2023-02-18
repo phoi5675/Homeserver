@@ -117,8 +117,6 @@ services:
     image: vikunja/api
     networks:
     - backend
-    ports:
-    - 3456:3456
     restart: unless-stopped
     volumes:
     - ./files:/app/vikunja/files
@@ -137,7 +135,7 @@ services:
     - ./vikunja-db:/var/lib/mysql
   vikunja-frontend:
     environment:
-      VIKUNJA_API_URL: http://172.31.0.21:3456/api/v1
+      VIKUNJA_API_URL: http://web-vikunja-api:3456/api/v1
     image: vikunja/frontend
     networks:
     - frontend
