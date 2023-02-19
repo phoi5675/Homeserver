@@ -134,6 +134,9 @@ services:
       MARIADB_ROOT_PASSWORD: insecure
       MARIADB_USER: photoprism
     image: mariadb:10.10
+    networks:
+    - backend
+    - frontend
     restart: unless-stopped
     security_opt:
     - seccomp:unconfined
@@ -173,8 +176,9 @@ services:
       PHOTOPRISM_SITE_URL: http://photoprism.me:2342/
       PHOTOPRISM_UPLOAD_NSFW: 'true'
     image: photoprism/photoprism:latest
-    ports:
-    - 2342:2342
+    networks:
+    - frontend
+    - backend
     security_opt:
     - seccomp:unconfined
     - apparmor:unconfined
@@ -182,6 +186,19 @@ services:
     - media:/photoprism/originals
     - ./storage:/photoprism/storage
     working_dir: /photoprism
+  photoprism-watchtower:
+    environment:
+      WATCHTOWER_CLEANUP: 'true'
+      WATCHTOWER_POLL_INTERVAL: 7200
+    image: containrrr/watchtower
+    networks:
+    - backend
+    profiles:
+    - update
+    restart: unless-stopped
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ~/.docker/config.json:/config.json
   vikunja-api:
     depends_on:
     - vikunja-db
@@ -221,17 +238,6 @@ services:
     - frontend
     - backend
     restart: unless-stopped
-  watchtower:
-    environment:
-      WATCHTOWER_CLEANUP: 'true'
-      WATCHTOWER_POLL_INTERVAL: 7200
-    image: containrrr/watchtower
-    profiles:
-    - update
-    restart: unless-stopped
-    volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - ~/.docker/config.json:/config.json
 version: '3.8'
 volumes:
   jellyfin-cache: null

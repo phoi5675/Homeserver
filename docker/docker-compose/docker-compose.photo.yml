@@ -6,12 +6,13 @@ services:
     image: photoprism/photoprism:latest
     depends_on:
       - photo-mariadb
-    # restart: unless-stopped
+    restart: unless-stopped
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
-    ports:
-      - "2342:2342" # HTTP port (host:container)
+    networks:
+      - frontend
+      - backend
     environment:
       PHOTOPRISM_ADMIN_USER: "admin" # superadmin username
       PHOTOPRISM_ADMIN_PASSWORD: "admin" # initial superadmin password (minimum 8 characters)
@@ -93,11 +94,14 @@ services:
       MARIADB_USER: "photoprism"
       MARIADB_PASSWORD: "insecure"
       MARIADB_ROOT_PASSWORD: "insecure"
+    networks:
+      - backend
+      - frontend
 
   ## Watchtower upgrades services automatically (optional)
   ## see https://docs.photoprism.app/getting-started/updates/#watchtower
   ## activate via "COMPOSE_PROFILES=update docker compose up -d"
-  watchtower:
+  photoprism-watchtower:
     restart: unless-stopped
     image: containrrr/watchtower
     profiles: ["update"]
@@ -107,3 +111,5 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "~/.docker/config.json:/config.json" # optional, for authentication if you have a Docker Hub account
+    networks:
+      - backend
