@@ -122,37 +122,66 @@ services:
     restart: always
     volumes:
     - owncloud-redis:/data
-  photoview:
+  photo-mariadb:
+    command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED
+      --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512
+      --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
+    environment:
+      MARIADB_AUTO_UPGRADE: '1'
+      MARIADB_DATABASE: photoprism
+      MARIADB_INITDB_SKIP_TZINFO: '1'
+      MARIADB_PASSWORD: insecure
+      MARIADB_ROOT_PASSWORD: insecure
+      MARIADB_USER: photoprism
+    image: mariadb:10.10
+    restart: unless-stopped
+    security_opt:
+    - seccomp:unconfined
+    - apparmor:unconfined
+    volumes:
+    - ./database:/var/lib/mysql
+  photoprism:
     depends_on:
-    - photoview_db
+    - photo-mariadb
     environment:
-    - PHOTOVIEW_DATABASE_DRIVER=mysql
-    - PHOTOVIEW_MYSQL_URL=photoview:photosecret@tcp(photoview_db)/photoview
-    - PHOTOVIEW_LISTEN_IP=photoview
-    - PHOTOVIEW_LISTEN_PORT=80
-    - PHOTOVIEW_MEDIA_CACHE=/app/cache
-    - GODEBUG=asyncpreemptoff=1
-    - MAPBOX_TOKEN=${MAP_TOKEN}
-    image: viktorstrate/photoview:2
-    networks:
-    - frontend
-    - backend
-    restart: always
+      PHOTOPRISM_ADMIN_PASSWORD: admin
+      PHOTOPRISM_ADMIN_USER: admin
+      PHOTOPRISM_AUTH_MODE: password
+      PHOTOPRISM_DATABASE_DRIVER: mysql
+      PHOTOPRISM_DATABASE_NAME: photoprism
+      PHOTOPRISM_DATABASE_PASSWORD: insecure
+      PHOTOPRISM_DATABASE_SERVER: photo-mariadb:3306
+      PHOTOPRISM_DATABASE_USER: photoprism
+      PHOTOPRISM_DETECT_NSFW: 'false'
+      PHOTOPRISM_DISABLE_CHOWN: 'false'
+      PHOTOPRISM_DISABLE_CLASSIFICATION: 'false'
+      PHOTOPRISM_DISABLE_FACES: 'false'
+      PHOTOPRISM_DISABLE_RAW: 'false'
+      PHOTOPRISM_DISABLE_SETTINGS: 'false'
+      PHOTOPRISM_DISABLE_TENSORFLOW: 'false'
+      PHOTOPRISM_DISABLE_WEBDAV: 'false'
+      PHOTOPRISM_EXPERIMENTAL: 'false'
+      PHOTOPRISM_HTTP_COMPRESSION: gzip
+      PHOTOPRISM_JPEG_QUALITY: 85
+      PHOTOPRISM_LOG_LEVEL: info
+      PHOTOPRISM_ORIGINALS_LIMIT: 5000
+      PHOTOPRISM_RAW_PRESETS: 'false'
+      PHOTOPRISM_READONLY: 'false'
+      PHOTOPRISM_SITE_AUTHOR: ''
+      PHOTOPRISM_SITE_CAPTION: AI-Powered Photos App
+      PHOTOPRISM_SITE_DESCRIPTION: ''
+      PHOTOPRISM_SITE_URL: http://photoprism.me:2342/
+      PHOTOPRISM_UPLOAD_NSFW: 'true'
+    image: photoprism/photoprism:latest
+    ports:
+    - 2342:2342
+    security_opt:
+    - seccomp:unconfined
+    - apparmor:unconfined
     volumes:
-    - photoview_api_cache:/app/cache
-    - media:/photos:ro
-  photoview_db:
-    environment:
-    - MYSQL_DATABASE=photoview
-    - MYSQL_USER=photoview
-    - MYSQL_PASSWORD=photosecret
-    - MYSQL_RANDOM_ROOT_PASSWORD=1
-    image: mariadb:10.5
-    networks:
-    - backend
-    restart: always
-    volumes:
-    - photoview_db_data:/var/lib/mysql
+    - media:/photoprism/originals
+    - ./storage:/photoprism/storage
+    working_dir: /photoprism
   vikunja-api:
     depends_on:
     - vikunja-db
@@ -192,6 +221,17 @@ services:
     - frontend
     - backend
     restart: unless-stopped
+  watchtower:
+    environment:
+      WATCHTOWER_CLEANUP: 'true'
+      WATCHTOWER_POLL_INTERVAL: 7200
+    image: containrrr/watchtower
+    profiles:
+    - update
+    restart: unless-stopped
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ~/.docker/config.json:/config.json
 version: '3.8'
 volumes:
   jellyfin-cache: null
@@ -199,13 +239,13 @@ volumes:
   media:
     driver: local
     driver_opts:
-      device: //${truenas_ip}/Photo
+      device: //${TRUENAS_IP}/Photo
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
   nas:
     driver: local
     driver_opts:
-      device: //${truenas_ip}/NAS
+      device: //${TRUENAS_IP}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
   npm-data: null

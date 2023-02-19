@@ -4,13 +4,13 @@ volumes:
   media:
     driver: local
     driver_opts:
-      device: //${truenas_ip}/Photo
+      device: //${TRUENAS_IP}/Photo
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
   nas:
     driver: local
     driver_opts:
-      device: //${truenas_ip}/NAS
+      device: //${TRUENAS_IP}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
   npm-data: null
