@@ -97,7 +97,7 @@ services:
       - root
       - --password=owncloud
       timeout: 5s
-    image: mariadb:10.9
+    image: mariadb:latest
     networks:
     - backend
     restart: always
