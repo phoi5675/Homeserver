@@ -29,7 +29,7 @@ services:
     - PGID=1000
     - MYSQL_ROOT_PASSWORD=password
     - TZ=Asia/Seoul
-    - MYSQL_DATABASE=bookstacukapp
+    - MYSQL_DATABASE=bookstackapp
     - MYSQL_USER=bookstack
     - MYSQL_PASSWORD=password
     image: lscr.io/linuxserver/mariadb
