@@ -6,7 +6,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - APP_URL=https://wiki.phoiweb.com:8433
+      - APP_URL=https://wiki.phoiweb.com:8443
       - DB_HOST=bookstack_db
       - DB_PORT=3306
       - DB_USER=bookstack
