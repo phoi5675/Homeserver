@@ -10,7 +10,7 @@ services:
       - DB_HOST=bookstack_db
       - DB_PORT=3306
       - DB_USER=root
-      - DB_PASS=password
+      - DB_PASSWORD=password
       - DB_DATABASE=bookstackapp
     networks:
       - frontend
