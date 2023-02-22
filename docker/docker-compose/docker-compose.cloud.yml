@@ -1,37 +1,32 @@
 version: "3.8"
 
 services:
-  filerun-db:
-    image: mariadb:10.1
-    environment:
-      MYSQL_ROOT_PASSWORD: your_mysql_root_password
-      MYSQL_USER: your_filerun_username
-      MYSQL_PASSWORD: your_filerun_password
-      MYSQL_DATABASE: your_filerun_database
+  nextcloud-app:
+    build:
+      context: .
+      dockerfile: ./Dockerfiles/cloud.Dockerfile
+    restart: always
     volumes:
-      - /filerun/db:/var/lib/mysql
-    networks:
-      - backend
-
-  web:
-    image: filerun/filerun
+      - nextcloud-data:/var/www/html
     environment:
-      FR_DB_HOST: filerun-db
-      FR_DB_PORT: 3306
-      FR_DB_NAME: your_filerun_database
-      FR_DB_USER: your_filerun_username
-      FR_DB_PASS: your_filerun_password
-      APACHE_RUN_USER: www-data
-      APACHE_RUN_USER_ID: 33
-      APACHE_RUN_GROUP: www-data
-      APACHE_RUN_GROUP_ID: 33
-    depends_on:
-      - filerun-db
-    links:
-      - filerun-db:filerun-db
+      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=nextcloud-db
     networks:
       - frontend
       - backend
+
+  nextcloud-db:
+    image: mariadb
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:
-      - /filerun/html:/var/www/html
-      - /filerun/user-files:/user-files
+      - nextcloud-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PWD}
+      - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      - backend
