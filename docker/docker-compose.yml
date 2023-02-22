@@ -2,6 +2,17 @@ networks:
   backend: null
   frontend: null
 services:
+  filerun-db:
+    environment:
+      MYSQL_DATABASE: your_filerun_database
+      MYSQL_PASSWORD: your_filerun_password
+      MYSQL_ROOT_PASSWORD: your_mysql_root_password
+      MYSQL_USER: your_filerun_username
+    image: mariadb:10.1
+    networks:
+    - backend
+    volumes:
+    - /filerun/db:/var/lib/mysql
   jellyfin:
     image: jellyfin/jellyfin:latest
     networks:
@@ -44,84 +55,6 @@ services:
     restart: always
     volumes:
     - npm-db:/var/lib/mysql
-  owncloud:
-    container_name: owncloud_server
-    depends_on:
-    - owncloud-mariadb
-    - owncloud-redis
-    environment:
-    - OWNCLOUD_DOMAIN=${OWNCLOUD_DOMAIN}
-    - OWNCLOUD_TRUSTED_DOMAINS=${OWNCLOUD_TRUSTED_DOMAINS}
-    - OWNCLOUD_DB_TYPE=mysql
-    - OWNCLOUD_DB_NAME=owncloud
-    - OWNCLOUD_DB_USERNAME=owncloud
-    - OWNCLOUD_DB_PASSWORD=owncloud
-    - OWNCLOUD_DB_HOST=owncloud-mariadb
-    - OWNCLOUD_ADMIN_USERNAME=${OWNCLOUD_ADMIN_USERNAME}
-    - OWNCLOUD_ADMIN_PASSWORD=${OWNCLOUD_ADMIN_PASSWORD}
-    - OWNCLOUD_MYSQL_UTF8MB4=true
-    - OWNCLOUD_REDIS_ENABLED=true
-    - OWNCLOUD_REDIS_HOST=owncloud-redis
-    healthcheck:
-      interval: 30s
-      retries: 5
-      test:
-      - CMD
-      - /usr/bin/healthcheck
-      timeout: 10s
-    image: owncloud/server:${OWNCLOUD_VERSION}
-    networks:
-    - backend
-    - frontend
-    restart: always
-    volumes:
-    - owncloud-files:/mnt/data
-  owncloud-mariadb:
-    command:
-    - --max-allowed-packet=128M
-    - --innodb-log-file-size=64M
-    container_name: owncloud-mariadb
-    environment:
-    - MYSQL_ROOT_PASSWORD=owncloud
-    - MYSQL_USER=owncloud
-    - MYSQL_PASSWORD=owncloud
-    - MYSQL_DATABASE=owncloud
-    healthcheck:
-      interval: 10s
-      retries: 5
-      test:
-      - CMD
-      - mysqladmin
-      - ping
-      - -u
-      - root
-      - --password=owncloud
-      timeout: 5s
-    image: mariadb:latest
-    networks:
-    - backend
-    restart: always
-    volumes:
-    - owncloud-mysql:/var/lib/mysql
-  owncloud-redis:
-    command:
-    - --databases
-    - '1'
-    container_name: owncloud-redis
-    healthcheck:
-      interval: 10s
-      retries: 5
-      test:
-      - CMD
-      - redis-cli
-      - ping
-      timeout: 5s
-    image: redis:6
-    networks:
-    - backend
-    restart: always
-    volumes:
-    - owncloud-redis:/data
   photo-mariadb:
     command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED
       --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512
@@ -239,6 +172,28 @@ services:
     - frontend
     - backend
     restart: unless-stopped
+  web:
+    depends_on:
+    - filerun-db
+    environment:
+      APACHE_RUN_GROUP: www-data
+      APACHE_RUN_GROUP_ID: 33
+      APACHE_RUN_USER: www-data
+      APACHE_RUN_USER_ID: 33
+      FR_DB_HOST: filerun-db
+      FR_DB_NAME: your_filerun_database
+      FR_DB_PASS: your_filerun_password
+      FR_DB_PORT: 3306
+      FR_DB_USER: your_filerun_username
+    image: filerun/filerun
+    links:
+    - filerun-db:filerun-db
+    networks:
+    - frontend
+    - backend
+    volumes:
+    - /filerun/html:/var/www/html
+    - /filerun/user-files:/user-files
 version: '3.8'
 volumes:
   jellyfin-cache: null
