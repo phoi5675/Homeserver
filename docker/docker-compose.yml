@@ -2,6 +2,17 @@ networks:
   backend: null
   frontend: null
 services:
+  homer:
+    container_name: homer
+    environment:
+    - INIT_ASSETS=1
+    image: b4bz/homer
+    networks:
+    - frontend
+    - backend
+    user: 1000:1000
+    volumes:
+    - /homer:/www/assets
   jellyfin:
     image: jellyfin/jellyfin:latest
     networks:
