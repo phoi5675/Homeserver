@@ -97,7 +97,6 @@ services:
     image: mariadb:10.10
     networks:
     - backend
-    - frontend
     restart: unless-stopped
     security_opt:
     - seccomp:unconfined

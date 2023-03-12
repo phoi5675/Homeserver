@@ -96,7 +96,6 @@ services:
       MARIADB_ROOT_PASSWORD: "insecure"
     networks:
       - backend
-      - frontend
 
   ## Watchtower upgrades services automatically (optional)
   ## see https://docs.photoprism.app/getting-started/updates/#watchtower
