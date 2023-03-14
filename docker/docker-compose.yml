@@ -24,20 +24,6 @@ services:
     - nas:/nas
     - jellyfin-config:/config
     - jellyfin-cache:/cache
-  navidrome:
-    environment:
-      ND_BASEURL: ''
-      ND_LOGLEVEL: info
-      ND_SCANSCHEDULE: 1h
-      ND_SESSIONTIMEOUT: 24h
-    image: deluan/navidrome:latest
-    networks:
-    - frontend
-    restart: always
-    user: 1000:1000
-    volumes:
-    - /navidrome-data:/data
-    - music:/music:ro
   nextcloud-app:
     build:
       context: .
