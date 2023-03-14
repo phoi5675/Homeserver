@@ -13,8 +13,15 @@ volumes:
       device: //${TRUENAS_IP}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
+  music:
+    driver: local
+    driver_opts:
+      device: //${TRUENAS_IP}/NAS/Media/Music
+      o: username=${SMB_ID},password=${SMB_PWD},rw
+      type: cifs
   npm-data: null
   npm-db: null
   npm-ssl: null
   nextcloud-data: null
   nextcloud-db: null
+  navidrome-data: null
