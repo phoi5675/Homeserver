@@ -36,7 +36,7 @@ services:
     restart: always
     user: 1000:1000
     volumes:
-    - navidrome-data:/data
+    - /navidrome-data:/data
     - music:/music:ro
   nextcloud-app:
     build:
@@ -235,7 +235,6 @@ volumes:
       device: //${TRUENAS_IP}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
-  navidrome-data: null
   nextcloud-data: null
   nextcloud-db: null
   npm-data: null

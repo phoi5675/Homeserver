@@ -11,7 +11,7 @@ services:
       ND_SESSIONTIMEOUT: 24h
       ND_BASEURL: ""
     volumes:
-      - "navidrome-data:/data"
+      - "/navidrome-data:/data"
       - "music:/music:ro"
     networks:
       - frontend
