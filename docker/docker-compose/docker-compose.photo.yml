@@ -6,7 +6,7 @@ services:
     image: photoprism/photoprism:latest
     depends_on:
       - photo-mariadb
-    restart: unless-stopped
+    restart: always
     security_opt:
       - seccomp:unconfined
       - apparmor:unconfined
