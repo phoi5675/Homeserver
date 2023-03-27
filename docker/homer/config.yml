@@ -2,7 +2,7 @@
 # Homepage configuration
 # See https://fontawesome.com/v5/search for icons options
 
-title: "phoiweb"
+title: "Dashboard"
 subtitle: "phoiweb.com"
 logo: "logo.png"
 # icon: "fas fa-skull-crossbones" # Optional icon
@@ -112,10 +112,10 @@ services:
       - name: "Portainer"
         logo: "assets/tools/portainer.png"
         tag: "admin"
-        url: "https://portainer.phoiweb.com:8443"
+        url: "https://172.31.0.104:9443"
         target: "_blank"
       - name: "Truenas"
         logo: "assets/tools/truenas.png"
         tag: "admin"
-        url: "https://truenas.phoiweb.com:8443"
+        url: "https://172.31.0.103"
         target: "_blank"
