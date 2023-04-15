@@ -14,6 +14,108 @@ services:
     user: 1000:1000
     volumes:
     - /homer:/www/assets
+  immich-database:
+    container_name: immich_postgres
+    env_file:
+    - .env
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_DB: ${IMMICH_DB_DATABASE_NAME}
+      POSTGRES_PASSWORD: ${IMMICH_DB_PASSWORD}
+      POSTGRES_USER: ${IMMICH_DB_USERNAME}
+    image: postgres:14
+    networks:
+    - backend
+    restart: always
+    volumes:
+    - pgdata:/var/lib/postgresql/data
+  immich-machine-learning:
+    container_name: immich_machine_learning
+    env_file:
+    - .env
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    networks:
+    - backend
+    restart: always
+    volumes:
+    - photo:/usr/src/app/upload
+    - model-cache:/cache
+  immich-microservices:
+    container_name: immich_microservices
+    depends_on:
+    - immich-redis
+    - immich-database
+    - immich-typesense
+    entrypoint:
+    - /bin/sh
+    - ./start-microservices.sh
+    env_file:
+    - .env
+    image: ghcr.io/immich-app/immich-server:release
+    networks:
+    - backend
+    restart: always
+    volumes:
+    - photo:/usr/src/app/upload
+  immich-proxy:
+    container_name: immich_proxy
+    depends_on:
+    - immich-server
+    environment:
+    - IMMICH_SERVER_URL
+    - IMMICH_WEB_URL
+    image: ghcr.io/immich-app/immich-proxy:release
+    logging:
+      driver: none
+    networks:
+    - backend
+    - frontend
+    ports:
+    - 2283:8080
+    restart: always
+  immich-redis:
+    container_name: immich_redis
+    image: redis:6.2
+    networks:
+    - backend
+    restart: always
+  immich-server:
+    container_name: immich_server
+    depends_on:
+    - immich-redis
+    - immich-database
+    - immich-typesense
+    entrypoint:
+    - /bin/sh
+    - ./start-server.sh
+    env_file:
+    - .env
+    image: ghcr.io/immich-app/immich-server:release
+    networks:
+    - backend
+    restart: always
+    volumes:
+    - photo:/usr/src/app/upload
+  immich-typesense:
+    container_name: immich_typesense
+    environment:
+    - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+    - TYPESENSE_DATA_DIR=/data
+    image: typesense/typesense:0.24.0
+    logging:
+      driver: none
+    restart: always
+    volumes:
+    - tsdata:/data
+  immich-web:
+    container_name: immich_web
+    entrypoint:
+    - /bin/sh
+    - ./entrypoint.sh
+    env_file:
+    - .env
+    image: ghcr.io/immich-app/immich-web:release
+    restart: always
   jellyfin:
     image: jellyfin/jellyfin:latest
     networks:
@@ -84,83 +186,6 @@ services:
     restart: always
     volumes:
     - npm-db:/var/lib/mysql
-  photo-mariadb:
-    command: mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED
-      --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512
-      --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120
-    environment:
-      MARIADB_AUTO_UPGRADE: '1'
-      MARIADB_DATABASE: photoprism
-      MARIADB_INITDB_SKIP_TZINFO: '1'
-      MARIADB_PASSWORD: insecure
-      MARIADB_ROOT_PASSWORD: insecure
-      MARIADB_USER: photoprism
-    image: mariadb:10.10
-    networks:
-    - backend
-    restart: unless-stopped
-    security_opt:
-    - seccomp:unconfined
-    - apparmor:unconfined
-    volumes:
-    - ./database:/var/lib/mysql
-  photoprism:
-    depends_on:
-    - photo-mariadb
-    environment:
-      PHOTOPRISM_ADMIN_PASSWORD: admin
-      PHOTOPRISM_ADMIN_USER: admin
-      PHOTOPRISM_AUTH_MODE: password
-      PHOTOPRISM_DATABASE_DRIVER: mysql
-      PHOTOPRISM_DATABASE_NAME: photoprism
-      PHOTOPRISM_DATABASE_PASSWORD: insecure
-      PHOTOPRISM_DATABASE_SERVER: photo-mariadb:3306
-      PHOTOPRISM_DATABASE_USER: photoprism
-      PHOTOPRISM_DETECT_NSFW: 'false'
-      PHOTOPRISM_DISABLE_CHOWN: 'false'
-      PHOTOPRISM_DISABLE_CLASSIFICATION: 'false'
-      PHOTOPRISM_DISABLE_FACES: 'false'
-      PHOTOPRISM_DISABLE_RAW: 'false'
-      PHOTOPRISM_DISABLE_SETTINGS: 'false'
-      PHOTOPRISM_DISABLE_TENSORFLOW: 'false'
-      PHOTOPRISM_DISABLE_WEBDAV: 'false'
-      PHOTOPRISM_EXPERIMENTAL: 'false'
-      PHOTOPRISM_HTTP_COMPRESSION: gzip
-      PHOTOPRISM_JPEG_QUALITY: 85
-      PHOTOPRISM_LOG_LEVEL: info
-      PHOTOPRISM_ORIGINALS_LIMIT: 5000
-      PHOTOPRISM_RAW_PRESETS: 'false'
-      PHOTOPRISM_READONLY: 'false'
-      PHOTOPRISM_SITE_AUTHOR: ''
-      PHOTOPRISM_SITE_CAPTION: AI-Powered Photos App
-      PHOTOPRISM_SITE_DESCRIPTION: ''
-      PHOTOPRISM_SITE_URL: http://photoprism.me:2342/
-      PHOTOPRISM_UPLOAD_NSFW: 'true'
-    image: photoprism/photoprism:latest
-    networks:
-    - frontend
-    - backend
-    restart: always
-    security_opt:
-    - seccomp:unconfined
-    - apparmor:unconfined
-    volumes:
-    - media:/photoprism/originals
-    - ./storage:/photoprism/storage
-    working_dir: /photoprism
-  photoprism-watchtower:
-    environment:
-      WATCHTOWER_CLEANUP: 'true'
-      WATCHTOWER_POLL_INTERVAL: 7200
-    image: containrrr/watchtower
-    networks:
-    - backend
-    profiles:
-    - update
-    restart: unless-stopped
-    volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - ~/.docker/config.json:/config.json
   vikunja-api:
     depends_on:
     - vikunja-db
@@ -204,12 +229,7 @@ version: '3.8'
 volumes:
   jellyfin-cache: null
   jellyfin-config: null
-  media:
-    driver: local
-    driver_opts:
-      device: //${TRUENAS_IP}/Photo
-      o: username=${SMB_ID},password=${SMB_PWD},rw
-      type: cifs
+  model-cache: null
   music:
     driver: local
     driver_opts:
@@ -227,3 +247,11 @@ volumes:
   npm-data: null
   npm-db: null
   npm-ssl: null
+  pgdata: null
+  photo:
+    driver: local
+    driver_opts:
+      device: //${TRUENAS_IP}/Photo
+      o: username=${SMB_ID},password=${SMB_PWD},rw
+      type: cifs
+  tsdata: null

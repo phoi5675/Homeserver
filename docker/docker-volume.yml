@@ -1,7 +1,7 @@
 volumes:
   jellyfin-cache: null
   jellyfin-config: null
-  media:
+  photo:
     driver: local
     driver_opts:
       device: //${TRUENAS_IP}/Photo
@@ -22,5 +22,10 @@ volumes:
   npm-data: null
   npm-db: null
   npm-ssl: null
+  # nextcloud
   nextcloud-data: null
   nextcloud-db: null
+  # immich(photo)
+  pgdata:
+  model-cache:
+  tsdata:
