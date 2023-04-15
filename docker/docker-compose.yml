@@ -16,8 +16,6 @@ services:
     - /homer:/www/assets
   immich-database:
     container_name: immich_postgres
-    env_file:
-    - .env
     environment:
       PG_DATA: /var/lib/postgresql/data
       POSTGRES_DB: ${IMMICH_DB_DATABASE_NAME}
@@ -31,8 +29,6 @@ services:
     - pgdata:/var/lib/postgresql/data
   immich-machine-learning:
     container_name: immich_machine_learning
-    env_file:
-    - .env
     image: ghcr.io/immich-app/immich-machine-learning:release
     networks:
     - backend
@@ -49,8 +45,6 @@ services:
     entrypoint:
     - /bin/sh
     - ./start-microservices.sh
-    env_file:
-    - .env
     image: ghcr.io/immich-app/immich-server:release
     networks:
     - backend
@@ -88,8 +82,6 @@ services:
     entrypoint:
     - /bin/sh
     - ./start-server.sh
-    env_file:
-    - .env
     image: ghcr.io/immich-app/immich-server:release
     networks:
     - backend
@@ -112,8 +104,6 @@ services:
     entrypoint:
     - /bin/sh
     - ./entrypoint.sh
-    env_file:
-    - .env
     image: ghcr.io/immich-app/immich-web:release
     restart: always
   jellyfin:
@@ -229,6 +219,12 @@ version: '3.8'
 volumes:
   jellyfin-cache: null
   jellyfin-config: null
+  media:
+    driver: local
+    driver_opts:
+      device: //${TRUENAS_IP}/Photo
+      o: username=${SMB_ID},password=${SMB_PWD},rw
+      type: cifs
   model-cache: null
   music:
     driver: local
