@@ -8,7 +8,6 @@ services:
     restart: always
     volumes:
       - nextcloud-data:/var/www/html
-      - nextcloud-apache:/etc/apache2
     environment:
       - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
       - MYSQL_DATABASE=nextcloud
