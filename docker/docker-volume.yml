@@ -1,6 +1,12 @@
 volumes:
   jellyfin-cache: null
   jellyfin-config: null
+  media:
+    driver: local
+    driver_opts:
+      device: //${TRUENAS_IP}/Photo
+      o: username=${SMB_ID},password=${SMB_PWD},rw
+      type: cifs
   photo:
     driver: local
     driver_opts:
