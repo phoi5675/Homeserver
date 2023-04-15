@@ -31,7 +31,3 @@ volumes:
   # nextcloud
   nextcloud-data: null
   nextcloud-db: null
-  # immich(photo)
-  pgdata:
-  model-cache:
-  tsdata:
