@@ -24,4 +24,3 @@ volumes:
   npm-ssl: null
   nextcloud-data: null
   nextcloud-db: null
-  nextcloud-apache: null
