@@ -40,7 +40,6 @@ services:
     restart: always
     volumes:
     - nextcloud-data:/var/www/html
-    - nextcloud-apache:/etc/apache2
   nextcloud-db:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     environment:
