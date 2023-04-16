@@ -10,7 +10,7 @@ services:
       database__connection__password: example
       database__connection__user: root
       url: https://blog.phoiweb.com:8443
-    image: ghost:4-alpine
+    image: ghost:5-alpine
     networks:
     - frontend
     - backend
