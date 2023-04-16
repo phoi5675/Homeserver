@@ -120,3 +120,12 @@ services:
         tag: "admin"
         url: "https://172.31.0.103"
         target: "_blank"
+  - name: "Monitoring"
+    icon: "fas fa-desktop"
+    items:
+      - name: "Umami"
+        logo: "assets/tools/umami.png"
+        subtitle: "web monitoring"
+        tag: monitoring
+        url: "https://web-monitor.phoiweb.com:8443"
+        target: "_blank"
