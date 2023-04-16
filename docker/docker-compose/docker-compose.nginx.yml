@@ -20,7 +20,6 @@ services:
     networks:
       - frontend
       - backend
-      - public
 
   npm-db:
     image: jc21/mariadb-aria:latest
