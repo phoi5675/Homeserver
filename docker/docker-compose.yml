@@ -11,11 +11,16 @@ services:
       database__connection__user: root
       url: http://localhost:2368
     image: ghost:4-alpine
+    networks:
+    - frontend
+    - backend
     restart: always
   ghost-db:
     environment:
       MYSQL_ROOT_PASSWORD: example
     image: mysql:8.0
+    networks:
+    - backend
     restart: always
   homer:
     container_name: homer
