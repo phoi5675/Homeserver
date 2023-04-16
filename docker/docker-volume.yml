@@ -31,3 +31,5 @@ volumes:
   # nextcloud
   nextcloud-data: null
   nextcloud-db: null
+  # umami
+  umami-db-data:

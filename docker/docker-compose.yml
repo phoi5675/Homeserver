@@ -85,6 +85,30 @@ services:
     restart: always
     volumes:
     - npm-db:/var/lib/mysql
+  umami:
+    depends_on:
+    - umami-db
+    environment:
+      DATABASE_TYPE: postgresql
+      DATABASE_URL: postgresql://umami:umami@db:5432/umami
+      HASH_SALT: replace-me-with-a-random-string
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    networks:
+    - backend
+    - frontend
+    restart: always
+  umami-db:
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_PASSWORD: umami
+      POSTGRES_USER: umami
+    image: postgres:12-alpine
+    networks:
+    - backend
+    restart: always
+    volumes:
+    - ./sql/schema.postgresql.sql:/docker-entrypoint-initdb.d/schema.postgresql.sql:ro
+    - umami-db-data:/var/lib/postgresql/data
   vikunja-api:
     depends_on:
     - vikunja-db
@@ -157,3 +181,4 @@ volumes:
       device: //${TRUENAS_IP}/Photo
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
+  umami-db-data: null
