@@ -73,6 +73,12 @@ services:
   - name: "Applications"
     icon: "fas fa-cloud"
     items:
+      - name: "Ghost"
+        logo: "assets/tools/ghost.ico"
+        subtitle: "blog"
+        tag: "app"
+        url: "https://blog.phoiweb.com:8443"
+        target: "_blank" # optional html a tag target attribute
       - name: "Jellyfin"
         logo: "assets/tools/jellyfin.ico"
         subtitle: "media"
