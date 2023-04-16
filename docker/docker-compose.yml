@@ -64,6 +64,7 @@ services:
     networks:
     - frontend
     - backend
+    - public
     ports:
     - 8080:8080
     - 81:81
