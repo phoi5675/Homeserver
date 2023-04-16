@@ -78,8 +78,8 @@ services:
         tag: "app"
         url: "https://media.phoiweb.com:8443"
         target: "_blank" # optional html a tag target attribute
-      - name: "Photoprism"
-        logo: "assets/tools/photoprism.png"
+      - name: "Librephotos"
+        logo: "assets/tools/librephotos.ico"
         subtitle: "photo album"
         tag: "app"
         url: "https://photo.phoiweb.com:8443"
