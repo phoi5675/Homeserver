@@ -34,7 +34,7 @@ services:
   vikunja-frontend:
     image: vikunja/frontend
     environment:
-      VIKUNJA_API_URL: https://vikunja-api.phoiweb.com:8443
+      VIKUNJA_API_URL: https://api.vikunja.phoiweb.com:8443
     restart: unless-stopped
     networks:
       - frontend
