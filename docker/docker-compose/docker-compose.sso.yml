@@ -17,7 +17,7 @@ services:
     networks:
       - backend
     env_file:
-      - stack.env
+      - stacks.env
   sso-redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
@@ -33,7 +33,7 @@ services:
     networks:
       - backend
     env_file:
-      - stack.env
+      - stacks.env
   sso-server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.6.1}
     restart: unless-stopped
@@ -57,7 +57,7 @@ services:
       - backend
       - frontend
     env_file:
-      - stack.env
+      - stacks.env
   sso-worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.6.1}
     restart: unless-stopped
@@ -86,4 +86,4 @@ services:
     networks:
       - backend
     env_file:
-      - stack.env
+      - stacks.env
