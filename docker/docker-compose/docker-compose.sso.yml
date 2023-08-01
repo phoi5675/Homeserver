@@ -16,8 +16,6 @@ services:
       POSTGRES_DB: ${PG_DB:-authentik}
     networks:
       - backend
-    env_file:
-      - stacks.env
   sso-redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
@@ -32,8 +30,6 @@ services:
       - sso-redis:/data
     networks:
       - backend
-    env_file:
-      - stacks.env
   sso-server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.6.1}
     restart: unless-stopped
@@ -44,6 +40,7 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
     volumes:
       - ./media:/media
       - ./custom-templates:/templates
@@ -56,8 +53,6 @@ services:
     networks:
       - backend
       - frontend
-    env_file:
-      - stacks.env
   sso-worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.6.1}
     restart: unless-stopped
@@ -68,6 +63,7 @@ services:
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
     # `user: root` and the docker socket volume are optional.
     # See more for the docker socket integration here:
     # https://goauthentik.io/docs/outposts/integrations/docker
@@ -85,5 +81,3 @@ services:
       - sso-redis
     networks:
       - backend
-    env_file:
-      - stacks.env
