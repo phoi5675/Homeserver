@@ -105,6 +105,8 @@ services:
     volumes:
     - npm-db:/var/lib/mysql
   sso-postgresql:
+    env_file:
+    - stack.env
     environment:
       POSTGRES_DB: ${PG_DB:-authentik}
       POSTGRES_PASSWORD: ${PG_PASS:?database password required}
@@ -125,6 +127,8 @@ services:
     - sso-database:/var/lib/postgresql/data
   sso-redis:
     command: --save 60 1 --loglevel warning
+    env_file:
+    - stack.env
     healthcheck:
       interval: 30s
       retries: 5
@@ -144,6 +148,8 @@ services:
     depends_on:
     - sso-postgresql
     - sso-redis
+    env_file:
+    - stack.env
     environment:
       AUTHENTIK_POSTGRESQL__HOST: sso-postgresql
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
@@ -166,6 +172,8 @@ services:
     depends_on:
     - sso-postgresql
     - sso-redis
+    env_file:
+    - stack.env
     environment:
       AUTHENTIK_POSTGRESQL__HOST: sso-postgresql
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
