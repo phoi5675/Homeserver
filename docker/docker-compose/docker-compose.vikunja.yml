@@ -22,7 +22,7 @@ services:
       VIKUNJA_DATABASE_USER: vikunja
       VIKUNJA_DATABASE_DATABASE: vikunja
       VIKUNJA_SERVICE_JWTSECRET: jwtsecret
-      VIKUNJA_SERVICE_FRONTENDURL: http://web-vikunja-frontend-1/
+      VIKUNJA_SERVICE_FRONTENDURL: https://vikunja.phoiweb.com:8443/
     volumes:
       - ./files:/app/vikunja/files
     depends_on:
@@ -34,7 +34,7 @@ services:
   vikunja-frontend:
     image: vikunja/frontend
     environment:
-      VIKUNJA_API_URL: http://web-vikunja-api:3456/api/v1
+      VIKUNJA_API_URL: https://vikunja-api.phoiweb.com:8443
     restart: unless-stopped
     networks:
       - frontend

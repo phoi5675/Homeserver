@@ -137,7 +137,7 @@ services:
       VIKUNJA_DATABASE_PASSWORD: secret
       VIKUNJA_DATABASE_TYPE: mysql
       VIKUNJA_DATABASE_USER: vikunja
-      VIKUNJA_SERVICE_FRONTENDURL: http://web-vikunja-frontend-1/
+      VIKUNJA_SERVICE_FRONTENDURL: https://vikunja.phoiweb.com:8443/
       VIKUNJA_SERVICE_JWTSECRET: jwtsecret
     image: vikunja/api
     networks:
@@ -161,7 +161,7 @@ services:
     - ./vikunja-db:/var/lib/mysql
   vikunja-frontend:
     environment:
-      VIKUNJA_API_URL: http://web-vikunja-api:3456/api/v1
+      VIKUNJA_API_URL: https://vikunja-api.phoiweb.com:8443
     image: vikunja/frontend
     networks:
     - frontend
