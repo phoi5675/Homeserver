@@ -16,6 +16,8 @@ services:
       POSTGRES_DB: ${PG_DB:-authentik}
     networks:
       - backend
+    env_file:
+      - stack.env
   sso-redis:
     image: docker.io/library/redis:alpine
     command: --save 60 1 --loglevel warning
@@ -30,6 +32,8 @@ services:
       - sso-redis:/data
     networks:
       - backend
+    env_file:
+      - stack.env
   sso-server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.6.1}
     restart: unless-stopped
@@ -44,14 +48,16 @@ services:
       - ./media:/media
       - ./custom-templates:/templates
     ports:
-      - "${COMPOSE_PORT_HTTP:-9001}:9000"
-      - "${COMPOSE_PORT_HTTPS:-9444}:9443"
+      - "${COMPOSE_PORT_HTTP:-9000}:9000"
+      - "${COMPOSE_PORT_HTTPS:-9443}:9443"
     depends_on:
       - sso-postgresql
       - sso-redis
     networks:
       - backend
       - frontend
+    env_file:
+      - stack.env
   sso-worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.6.1}
     restart: unless-stopped
@@ -79,3 +85,5 @@ services:
       - sso-redis
     networks:
       - backend
+    env_file:
+      - stack.env
