@@ -45,6 +45,41 @@ services:
     - nas:/nas
     - jellyfin-config:/config
     - jellyfin-cache:/cache
+  keycloak:
+    command: start
+    container_name: keycloak
+    depends_on:
+    - keycloak-db
+    environment:
+      KC_DB: postgres
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+      KC_DB_SCHEMA: public
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USER: keycloak
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_PROXY: edge
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+    image: quay.io/keycloak/keycloak:latest
+    networks:
+    - frontend
+    - backend
+    restart: always
+  keycloak-db:
+    container_name: keycloak-db
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+      POSTGRES_USER: keycloak
+    image: postgres:latest
+    networks:
+    - backend
+    restart: always
+    security_opt:
+    - label:disable
+    volumes:
+    - ./container-data/db:/var/lib/postgresql/data
+    - /etc/localtime:/etc/localtime:ro
   nextcloud-app:
     build:
       context: .
