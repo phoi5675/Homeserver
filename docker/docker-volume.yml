@@ -33,8 +33,5 @@ volumes:
   nextcloud-db: null
   # umami
   umami-db-data:
-  # sso
-  sso-database:
-    driver: local
-  sso-redis:
-    driver: local
+  # affine
+  affine_data:

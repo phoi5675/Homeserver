@@ -1,0 +1,10 @@
+services:
+  affine:
+    image: ghcr.io/toeverything/affine-self-hosted:latest
+    restart: always
+    container_name: affine
+    volumes:
+      - affine_data:/app/data
+    networks:
+      - backend
+      - frontend
