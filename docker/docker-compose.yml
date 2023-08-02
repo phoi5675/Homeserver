@@ -141,6 +141,83 @@ services:
     restart: always
     volumes:
     - npm-db:/var/lib/mysql
+  outline:
+    command: sh -c "yarn start --env=production-ssl-disabled"
+    container_name: outline
+    depends_on:
+    - outline_postgres
+    - outline_redis
+    - outline_minio
+    environment:
+    - PGSSLMODE=disable
+    - SECRET_KEY=${SECRET_KEY}
+    - UTILS_SECRET=${UTILS_SECRET}
+    - DATABASE_URL=postgres://outline:${POSTGRES_PASSWORD}@outline_postgres:5432/outline
+    - REDIS_URL=redis://outline_redis:6379
+    - URL=${WIKI_URL}
+    - PORT=80
+    - AWS_ACCESS_KEY_ID=minio
+    - AWS_REGION=us-east-1
+    - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
+    - AWS_S3_UPLOAD_BUCKET_URL=${WIKIDATA_URL}
+    - AWS_S3_UPLOAD_BUCKET_NAME=outline
+    - AWS_S3_FORCE_PATH_STYLE=true
+    - AWS_S3_ACL=private
+    - SMTP_HOST=${SMTP_HOST}
+    - SMTP_PORT=${SMTP_PORT}
+    - SMTP_FROM_EMAIL=${SMTP_FROM_EMAIL}
+    - SMTP_REPLY_EMAIL=${SMTP_REPLY_EMAIL}
+    - SMTP_SECURE=${SMTP_SECURE}
+    - OIDC_CLIENT_ID=${OIDC_CLIENT_ID}
+    - OIDC_CLIENT_SECRET=${OIDC_CLIENT_SECRET}
+    - OIDC_AUTH_URI=${OIDC_AUTH_URI}
+    - OIDC_TOKEN_URI=${OIDC_TOKEN_URI}
+    - OIDC_USERINFO_URI=${OIDC_USERINFO_URI}
+    - OIDC_DISPLAY_NAME=${OIDC_DISPLAY_NAME}
+    - OIDC_USERNAME_CLAIM=email
+    image: outlinewiki/outline:latest
+    networks:
+    - backend
+    - frontend
+    restart: always
+    user: root
+  outline_minio:
+    command: server /data --console-address :9001
+    container_name: outline_minio
+    environment:
+    - MINIO_ROOT_USER=minio
+    - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    - MINIO_BROWSER_REDIRECT_URL=${MINIO_BROWSER_REDIRECT_URL}
+    image: minio/minio
+    networks:
+    - frontend
+    restart: always
+    security_opt:
+    - label:disable
+    volumes:
+    - ./container-data/data:/data
+    - /etc/localtime:/etc/localtime:ro
+  outline_postgres:
+    container_name: outline_postgres
+    environment:
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    - POSTGRES_USER=outline
+    - POSTGRES_DB=outline
+    image: postgres:15
+    networks:
+    - backend
+    restart: always
+    security_opt:
+    - label:disable
+    volumes:
+    - ./container-data/db:/var/lib/postgresql/data
+    - /etc/localtime:/etc/localtime:ro
+  outline_redis:
+    container_name: outline_redis
+    image: redis
+    networks:
+    - backend
+    restart: always
   umami:
     depends_on:
     - umami-db
