@@ -2,15 +2,6 @@ networks:
   backend: null
   frontend: null
 services:
-  affine:
-    container_name: affine
-    image: ghcr.io/toeverything/affine-self-hosted:latest
-    networks:
-    - backend
-    - frontend
-    restart: always
-    volumes:
-    - affine_data:/app/data
   ghost:
     environment:
       database__client: mysql
