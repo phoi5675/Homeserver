@@ -33,6 +33,3 @@ volumes:
   nextcloud-db: null
   # umami
   umami-db-data:
-  # Authentik
-  sso-redis:
-  sso-database:

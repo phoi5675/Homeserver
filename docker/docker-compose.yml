@@ -235,6 +235,4 @@ volumes:
       device: //${TRUENAS_IP}/Photo
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
-  sso-database: null
-  sso-redis: null
   umami-db-data: null
