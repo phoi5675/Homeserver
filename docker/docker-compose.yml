@@ -257,7 +257,6 @@ services:
     restart: unless-stopped
 version: '3.8'
 volumes:
-  affine_data: null
   jellyfin-cache: null
   jellyfin-config: null
   media:
@@ -289,4 +288,6 @@ volumes:
       device: //${TRUENAS_IP}/Photo
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
+  sso-database: null
+  sso-redis: null
   umami-db-data: null
