@@ -78,7 +78,7 @@ services:
     security_opt:
     - label:disable
     volumes:
-    - ./container-data/db:/var/lib/postgresql/data
+    - ./container-data/keycloak-db:/var/lib/postgresql/data
     - /etc/localtime:/etc/localtime:ro
   nextcloud-app:
     build:
@@ -195,7 +195,7 @@ services:
     security_opt:
     - label:disable
     volumes:
-    - ./container-data/data:/data
+    - ./container-data/outline-data:/data
     - /etc/localtime:/etc/localtime:ro
   outline_postgres:
     container_name: outline_postgres
@@ -210,7 +210,7 @@ services:
     security_opt:
     - label:disable
     volumes:
-    - ./container-data/db:/var/lib/postgresql/data
+    - ./container-data/outline-db:/var/lib/postgresql/data
     - /etc/localtime:/etc/localtime:ro
   outline_redis:
     container_name: outline_redis
