@@ -135,3 +135,12 @@ services:
         tag: monitoring
         url: "https://web-monitor.phoiweb.com:8443"
         target: "_blank"
+  - name: "Dev"
+    icon: "fas fa-desktop"
+    items:
+      - name: "Gitlab"
+        logo: "assets/tools/gitlab.png"
+        subtitle: "git server"
+        tag: "dev"
+        url: "https://git.phoiweb.com:8443"
+        target: "_blank"
