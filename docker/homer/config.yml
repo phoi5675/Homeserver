@@ -103,6 +103,12 @@ services:
         tag: "app"
         url: "https://vikunja.phoiweb.com:8443"
         target: "_blank"
+      - name: "Outline"
+        logo: "assets/tools/outline.png"
+        subtitle: "Notion like note app"
+        tag: "app"
+        url: "https://note.phoiweb.com:8443"
+        target: "_blank"
   - name: "Administration"
     icon: "fas fa-terminal"
     items:
@@ -126,6 +132,12 @@ services:
         tag: "admin"
         url: "https://172.31.0.103"
         target: "_blank"
+      - name: "Keycloak"
+        logo: "assets/tools/keycloak.png"
+        tag: "admin"
+        url: "https://sso.phoiweb.com:8443"
+        target: "_blank"
+
   - name: "Monitoring"
     icon: "fas fa-desktop"
     items:
@@ -134,13 +146,4 @@ services:
         subtitle: "web monitoring"
         tag: monitoring
         url: "https://web-monitor.phoiweb.com:8443"
-        target: "_blank"
-  - name: "Dev"
-    icon: "fas fa-desktop"
-    items:
-      - name: "Gitlab"
-        logo: "assets/tools/gitlab.png"
-        subtitle: "git server"
-        tag: "dev"
-        url: "https://git.phoiweb.com:8443"
         target: "_blank"
