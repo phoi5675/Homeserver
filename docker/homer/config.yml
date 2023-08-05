@@ -137,7 +137,7 @@ services:
       - name: "Truenas"
         logo: "assets/tools/truenas.png"
         tag: "admin"
-        url: "https://172.31.0.103"
+        url: "https://nas.phoiweb.com"
         target: "_blank"
       - name: "Keycloak"
         logo: "assets/tools/keycloak.png"
