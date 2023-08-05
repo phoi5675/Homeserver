@@ -242,6 +242,14 @@ services:
     volumes:
     - ./sql/schema.postgresql.sql:/docker-entrypoint-initdb.d/schema.postgresql.sql:ro
     - umami-db-data:/var/lib/postgresql/data
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server:latest
+    networks:
+    - frontend
+    restart: unless-stopped
+    volumes:
+    - vaultwarden-data:/data
   vikunja-api:
     depends_on:
     - vikunja-db
@@ -315,3 +323,4 @@ volumes:
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
   umami-db-data: null
+  vaultwarden-data: null
