@@ -113,7 +113,7 @@ services:
         logo: "assets/tools/vaultwarden.png"
         subtitle: "Store Secret keys"
         tag: "app"
-        url: "https://note.phoiweb.com:8443"
+        url: "https://vault.phoiweb.com:8443"
         target: "_blank"
 
   - name: "Administration"
