@@ -35,6 +35,8 @@ services:
     volumes:
     - /homer:/www/assets
   jellyfin:
+    devices:
+    - /dev/dri/renderD128:/dev/dri/renderD128
     group_add:
     - 109
     image: jellyfin/jellyfin:latest
