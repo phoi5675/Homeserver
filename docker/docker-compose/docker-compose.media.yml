@@ -4,8 +4,6 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:latest
     restart: always
-    group_add:
-      - "109"
     volumes:
       - media:/media
       - nas:/nas
@@ -14,5 +12,3 @@ services:
     networks:
       - frontend
       - backend
-    devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128
