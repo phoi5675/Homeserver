@@ -35,6 +35,8 @@ services:
     volumes:
     - /homer:/www/assets
   jellyfin:
+    group_add:
+    - 109
     image: jellyfin/jellyfin:latest
     networks:
     - frontend

@@ -4,6 +4,8 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:latest
     restart: always
+    group_add:
+      - 109
     volumes:
       - media:/media
       - nas:/nas
