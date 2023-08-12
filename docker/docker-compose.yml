@@ -38,7 +38,7 @@ services:
     devices:
     - /dev/dri/renderD128:/dev/dri/renderD128
     group_add:
-    - 109
+    - '109'
     image: jellyfin/jellyfin:latest
     networks:
     - frontend
