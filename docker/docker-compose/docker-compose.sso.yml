@@ -24,7 +24,7 @@ services:
 
   keycloak-db:
     container_name: keycloak-db
-    image: postgres:latest
+    image: postgres:15
     restart: always
     security_opt:
       - label:disable
