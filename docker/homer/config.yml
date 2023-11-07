@@ -154,13 +154,3 @@ services:
         tag: monitoring
         url: "https://web-monitor.phoiweb.com"
         target: "_blank"
-
-  - name: "Develop"
-    icon: "fas fa-code"
-    items:
-      - name: "Code"
-        logo: "assets/tools/code.png"
-        subtitle: "Web-based VS Code"
-        tag: "develop"
-        url: "https://code.phoiweb.com"
-        target: "_blank"
