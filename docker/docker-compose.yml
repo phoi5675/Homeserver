@@ -34,17 +34,6 @@ services:
     user: 1000:1000
     volumes:
     - /homer:/www/assets
-  jellyfin:
-    image: jellyfin/jellyfin:latest
-    networks:
-    - frontend
-    - backend
-    restart: always
-    volumes:
-    - media:/media
-    - nas:/nas
-    - jellyfin-config:/config
-    - jellyfin-cache:/cache
   keycloak:
     command: start
     container_name: keycloak
