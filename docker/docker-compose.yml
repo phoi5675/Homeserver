@@ -69,34 +69,19 @@ services:
     volumes:
     - ./container-data/keycloak-db:/var/lib/postgresql/data
     - /etc/localtime:/etc/localtime:ro
-  nextcloud-app:
-    build:
-      context: .
-      dockerfile: ./Dockerfiles/cloud.Dockerfile
+  nextcloud-aio-mastercontainer:
+    container_name: nextcloud-aio-mastercontainer
     environment:
-    - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-    - MYSQL_DATABASE=nextcloud
-    - MYSQL_USER=nextcloud
-    - MYSQL_HOST=nextcloud-db
+    - APACHE_PORT=11000
+    - APACHE_IP_BINDING=127.0.0.1
+    image: nextcloud/all-in-one:latest
+    init: true
     networks:
     - frontend
-    - backend
     restart: always
     volumes:
-    - nextcloud-data:/var/www/html
-  nextcloud-db:
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-    environment:
-    - MYSQL_ROOT_PASSWORD=${NEXTCLOUD_DB_PWD}
-    - MYSQL_PASSWORD=${NEXTCLOUD_DB_PWD}
-    - MYSQL_DATABASE=nextcloud
-    - MYSQL_USER=nextcloud
-    image: mariadb
-    networks:
-    - backend
-    restart: always
-    volumes:
-    - nextcloud-db:/var/lib/mysql
+    - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+    - /var/run/docker.sock:/var/run/docker.sock:ro
   npm-app:
     environment:
     - DB_MYSQL_HOST=npm-db
@@ -300,8 +285,8 @@ volumes:
       device: //${TRUENAS_IP}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
-  nextcloud-data: null
-  nextcloud-db: null
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer
   npm-data: null
   npm-db: null
   npm-ssl: null

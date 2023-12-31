@@ -28,10 +28,10 @@ volumes:
   npm-data: null
   npm-db: null
   npm-ssl: null
-  # nextcloud
-  nextcloud-data: null
-  nextcloud-db: null
   # umami
   umami-db-data:
   # vaultwarden
   vaultwarden-data:
+  # nextcloud
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer # This line is not allowed to be changed as otherwise the built-in backup solution will not work
