@@ -72,6 +72,7 @@ services:
   nextcloud-aio-mastercontainer:
     container_name: nextcloud-aio-mastercontainer
     environment:
+    - AIO_DISABLE_BACKUP_SECTION=false
     - APACHE_PORT=11000
     - APACHE_IP_BINDING=127.0.0.1
     image: nextcloud/all-in-one:latest
