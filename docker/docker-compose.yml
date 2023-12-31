@@ -74,7 +74,7 @@ services:
     environment:
     - AIO_DISABLE_BACKUP_SECTION=false
     - APACHE_PORT=11000
-    - APACHE_IP_BINDING=127.0.0.1
+    - APACHE_IP_BINDING=172.31.0.104
     image: nextcloud/all-in-one:latest
     init: true
     networks:
