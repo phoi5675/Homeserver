@@ -1,6 +1,7 @@
 networks:
   backend: null
   frontend: null
+  monitor_backend: null
 services:
   cadvisor:
     container_name: cadvisor
@@ -8,7 +9,7 @@ services:
     - /dev/kmsg
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     networks:
-    - backend
+    - monitor_backend
     privileged: true
     restart: unless-stopped
     volumes:
@@ -22,7 +23,7 @@ services:
     image: grafana/grafana-oss:latest
     networks:
     - frontend
-    - backend
+    - monitor_backend
     restart: unless-stopped
     volumes:
     - grafana-data:/var/lib/grafana
@@ -93,7 +94,7 @@ services:
     container_name: node_exporter
     image: quay.io/prometheus/node-exporter:latest
     networks:
-    - backend
+    - monitor_backend
     pid: host
     restart: unless-stopped
     volumes:
@@ -213,7 +214,7 @@ services:
     container_name: prometheus
     image: prom/prometheus
     networks:
-    - backend
+    - monitor_backend
     restart: unless-stopped
     volumes:
     - /etc/prometheus:/config:ro
