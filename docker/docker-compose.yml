@@ -2,6 +2,15 @@ networks:
   backend: null
   frontend: null
 services:
+  grafana:
+    container_name: grafana
+    image: grafana/grafana-oss:latest
+    networks:
+    - frontend
+    - backend
+    restart: unless-stopped
+    volumes:
+    - grafana-data:/var/lib/grafana
   homer:
     container_name: homer
     environment:
@@ -49,30 +58,6 @@ services:
     volumes:
     - ./container-data/keycloak-db:/var/lib/postgresql/data
     - /etc/localtime:/etc/localtime:ro
-  netdata:
-    cap_add:
-    - SYS_PTRACE
-    - SYS_ADMIN
-    container_name: netdata
-    image: netdata/netdata
-    network_mode: host
-    pid: host
-    restart: unless-stopped
-    security_opt:
-    - apparmor:unconfined
-    volumes:
-    - netdataconfig:/etc/netdata
-    - netdatalib:/var/lib/netdata
-    - netdatacache:/var/cache/netdata
-    - /etc/passwd:/host/etc/passwd:ro
-    - /etc/group:/host/etc/group:ro
-    - /etc/localtime:/etc/localtime:ro
-    - /proc:/host/proc:ro
-    - /sys:/host/sys:ro
-    - /etc/os-release:/host/etc/os-release:ro
-    - /var/log:/host/var/log:ro
-    - /var/run/docker.sock:/var/run/docker.sock:ro
-    - /run/dbus:/run/dbus:ro
   nextcloud-aio-mastercontainer:
     container_name: nextcloud-aio-mastercontainer
     environment:
@@ -197,6 +182,16 @@ services:
     networks:
     - backend
     restart: always
+  prometheus:
+    command: --config.file=/etc/prometheus/prometheus.yaml
+    container_name: prometheus
+    image: prom/prometheus:v2.37.9
+    networks:
+    - backend
+    restart: unless-stopped
+    volumes:
+    - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+    - ./data:/prometheus
   vaultwarden:
     container_name: vaultwarden
     image: vaultwarden/server:latest
@@ -246,6 +241,8 @@ services:
     restart: unless-stopped
 version: '3.8'
 volumes:
+  grafana-data:
+    driver: local
   jellyfin-cache: null
   jellyfin-config: null
   media:
@@ -266,9 +263,6 @@ volumes:
       device: //${TRUENAS_IP}/NAS
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
-  netdatacache: null
-  netdataconfig: null
-  netdatalib: null
   nextcloud_aio_mastercontainer:
     name: nextcloud_aio_mastercontainer
   npm-data: null
@@ -280,4 +274,6 @@ volumes:
       device: //${TRUENAS_IP}/Photo
       o: username=${SMB_ID},password=${SMB_PWD},rw
       type: cifs
+  prometheus-data:
+    driver: local
   vaultwarden-data: null
