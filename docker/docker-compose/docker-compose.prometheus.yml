@@ -17,12 +17,14 @@ services:
     container_name: node_exporter
     command:
       - "--path.rootfs=/host"
-    network_mode: host
+    # network_mode: host
     pid: host
     restart: unless-stopped
     volumes:
       - "/:/host:ro,rslave"
     # default port is 9100
+    networks:
+      - backend
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
@@ -39,5 +41,5 @@ services:
       - /dev/kmsg
     privileged: true
     restart: unless-stopped
-    # networks:
-    #   - backend
+    networks:
+      - backend
