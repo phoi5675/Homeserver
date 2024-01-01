@@ -56,6 +56,8 @@ services:
     container_name: netdata
     image: netdata/netdata
     network_mode: host
+    networks:
+    - frontend
     pid: host
     restart: unless-stopped
     security_opt:
