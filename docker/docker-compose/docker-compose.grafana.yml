@@ -9,4 +9,4 @@ services:
     restart: unless-stopped
     networks:
       - frontend
-      - monitor_backend
+      - backend
