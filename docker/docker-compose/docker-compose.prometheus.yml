@@ -56,3 +56,5 @@ services:
       - "--graphite.mapping-config=/tmp/graphite_mapping.conf"
     volumes:
       - /etc/prometheus/graphite_mapping.conf:/tmp/graphite_mapping.conf
+    networks:
+      - backend

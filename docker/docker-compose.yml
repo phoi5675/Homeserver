@@ -31,6 +31,8 @@ services:
     - --graphite.mapping-config=/tmp/graphite_mapping.conf
     container_name: graphite_exporter
     image: prom/graphite-exporter
+    networks:
+    - backend
     volumes:
     - /etc/prometheus/graphite_mapping.conf:/tmp/graphite_mapping.conf
   homer:
