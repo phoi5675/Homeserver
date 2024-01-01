@@ -38,6 +38,11 @@ services:
     user: 1000:1000
     volumes:
     - /homer:/www/assets
+  influxdata:
+    container_name: influxdata
+    image: influxdb:latest
+    networks:
+    - backend
   keycloak:
     command: start
     container_name: keycloak
@@ -271,8 +276,7 @@ version: '3.8'
 volumes:
   grafana-data:
     driver: local
-  jellyfin-cache: null
-  jellyfin-config: null
+  influxdb-data: null
   media:
     driver: local
     driver_opts:
