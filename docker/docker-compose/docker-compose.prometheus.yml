@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
     networks:
       - backend
-
+  # node exporter for VM running docker
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node_exporter
@@ -27,7 +27,7 @@ services:
     # default port is 9100
     networks:
       - backend
-
+  # monitoring docker
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.0
     container_name: cadvisor
@@ -45,3 +45,14 @@ services:
     restart: unless-stopped
     networks:
       - backend
+  # monitoring truenas
+  graphite_exporter:
+    image: prom/graphite-exporter
+    container_name: graphite_exporter
+    # ports:
+    #   - 9108:9108
+    #   - 9109:9109
+    command:
+      - "--graphite.mapping-config=/tmp/graphite_mapping.conf"
+    volumes:
+      - /etc/prometheus/graphite_mapping.conf:/tmp/graphite_mapping.conf

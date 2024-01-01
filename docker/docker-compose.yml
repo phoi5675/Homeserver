@@ -26,6 +26,13 @@ services:
     restart: unless-stopped
     volumes:
     - grafana-data:/var/lib/grafana
+  graphite_exporter:
+    command:
+    - --graphite.mapping-config=/tmp/graphite_mapping.conf
+    container_name: graphite_exporter
+    image: prom/graphite-exporter
+    volumes:
+    - /etc/prometheus/graphite_mapping.conf:/tmp/graphite_mapping.conf
   homer:
     container_name: homer
     environment:
