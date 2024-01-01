@@ -209,7 +209,9 @@ services:
     - backend
     restart: always
   prometheus:
-    command: --config.file=/config/prometheus.yaml
+    command:
+    - --config.file=/config/prometheus.yaml
+    - --storage.tsdb.retention.time=90d
     container_name: prometheus
     image: prom/prometheus
     networks:

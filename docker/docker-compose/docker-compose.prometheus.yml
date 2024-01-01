@@ -4,7 +4,9 @@ services:
     container_name: prometheus
     # ports:
     # - 9090:9090
-    command: "--config.file=/config/prometheus.yaml"
+    command:
+      - "--config.file=/config/prometheus.yaml"
+      - "--storage.tsdb.retention.time=90d"
     volumes:
       - /etc/prometheus:/config:ro
       - prometheus-data:/prometheus
