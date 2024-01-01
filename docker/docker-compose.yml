@@ -183,15 +183,15 @@ services:
     - backend
     restart: always
   prometheus:
-    command: --config.file=/etc/prometheus/prometheus.yaml
+    command: --config.file=/config/prometheus.yaml
     container_name: prometheus
-    image: prom/prometheus:v2.37.9
+    image: prom/prometheus
     networks:
     - backend
     restart: unless-stopped
     volumes:
-    - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
-    - ./data:/prometheus
+    - /etc/prometheus:/config:ro
+    - prometheus-data:/prometheus
   vaultwarden:
     container_name: vaultwarden
     image: vaultwarden/server:latest

@@ -1,13 +1,13 @@
 services:
   prometheus:
-    image: prom/prometheus:v2.37.9
+    image: prom/prometheus
     container_name: prometheus
     # ports:
     # - 9090:9090
-    command: "--config.file=/etc/prometheus/prometheus.yaml"
+    command: "--config.file=/config/prometheus.yaml"
     volumes:
-      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
-      - ./data:/prometheus
+      - /etc/prometheus:/config:ro
+      - prometheus-data:/prometheus
     restart: unless-stopped
     networks:
       - backend
