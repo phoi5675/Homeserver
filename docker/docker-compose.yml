@@ -43,6 +43,8 @@ services:
     image: influxdb:latest
     networks:
     - backend
+    ports:
+    - 8086:8086
   keycloak:
     command: start
     container_name: keycloak

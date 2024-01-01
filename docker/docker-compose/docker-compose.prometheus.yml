@@ -48,7 +48,7 @@ services:
   influxdata:
     image: influxdb:latest
     container_name: influxdata
-    # ports:
-    #   - 8086:8086
+    ports:
+      - 8086:8086
     networks:
       - backend
