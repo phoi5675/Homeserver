@@ -28,8 +28,6 @@ volumes:
   npm-data: null
   npm-db: null
   npm-ssl: null
-  # umami
-  umami-db-data:
   # vaultwarden
   vaultwarden-data:
   # nextcloud
