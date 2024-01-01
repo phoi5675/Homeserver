@@ -45,16 +45,3 @@ services:
     restart: unless-stopped
     networks:
       - backend
-  # monitoring truenas
-  graphite_exporter:
-    image: prom/graphite-exporter
-    container_name: graphite_exporter
-    # ports:
-    #   - 9108:9108
-    #   - 9109:9109
-    command:
-      - "--graphite.mapping-config=/tmp/graphite_mapping.conf"
-    volumes:
-      - /etc/prometheus/graphite_mapping.conf:/tmp/graphite_mapping.conf
-    networks:
-      - backend
