@@ -2,26 +2,6 @@ networks:
   backend: null
   frontend: null
 services:
-  ghost:
-    environment:
-      database__client: mysql
-      database__connection__database: ghost
-      database__connection__host: ghost-db
-      database__connection__password: example
-      database__connection__user: root
-      url: https://blog.phoiweb.com:8443
-    image: ghost:5-alpine
-    networks:
-    - frontend
-    - backend
-    restart: always
-  ghost-db:
-    environment:
-      MYSQL_ROOT_PASSWORD: example
-    image: mysql:8.0
-    networks:
-    - backend
-    restart: always
   homer:
     container_name: homer
     environment:
@@ -193,30 +173,6 @@ services:
     networks:
     - backend
     restart: always
-  umami:
-    depends_on:
-    - umami-db
-    environment:
-      DATABASE_TYPE: postgresql
-      DATABASE_URL: postgresql://umami:umami@umami-db:5432/umami
-      HASH_SALT: replace-me-with-a-random-string
-    image: ghcr.io/umami-software/umami:postgresql-latest
-    networks:
-    - backend
-    - frontend
-    restart: always
-  umami-db:
-    environment:
-      POSTGRES_DB: umami
-      POSTGRES_PASSWORD: umami
-      POSTGRES_USER: umami
-    image: postgres:12-alpine
-    networks:
-    - backend
-    restart: always
-    volumes:
-    - ./sql/schema.postgresql.sql:/docker-entrypoint-initdb.d/schema.postgresql.sql:ro
-    - umami-db-data:/var/lib/postgresql/data
   vaultwarden:
     container_name: vaultwarden
     image: vaultwarden/server:latest

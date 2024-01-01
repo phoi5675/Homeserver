@@ -73,23 +73,11 @@ services:
   - name: "Applications"
     icon: "fas fa-cloud"
     items:
-      - name: "Ghost"
-        logo: "assets/tools/ghost.ico"
-        subtitle: "Blog"
-        tag: "app"
-        url: "https://blog.phoiweb.com"
-        target: "_blank" # optional html a tag target attribute
       - name: "Jellyfin"
         logo: "assets/tools/jellyfin.ico"
         subtitle: "Media"
         tag: "app"
         url: "https://media.phoiweb.com"
-        target: "_blank" # optional html a tag target attribute
-      - name: "Librephotos"
-        logo: "assets/tools/librephotos.ico"
-        subtitle: "Photo album"
-        tag: "app"
-        url: "https://photo.phoiweb.com"
         target: "_blank" # optional html a tag target attribute
       - name: "Nextcloud"
         logo: "assets/tools/nextcloud.png"
@@ -145,12 +133,12 @@ services:
         url: "https://sso.phoiweb.com"
         target: "_blank"
 
-  - name: "Monitoring"
-    icon: "fas fa-desktop"
-    items:
-      - name: "Umami"
-        logo: "assets/tools/umami.png"
-        subtitle: "Web traffic monitor & statistics"
-        tag: monitoring
-        url: "https://web-monitor.phoiweb.com"
-        target: "_blank"
+  # - name: "Monitoring"
+  #   icon: "fas fa-desktop"
+  #   items:
+  #     - name: "Umami"
+  #       logo: "assets/tools/umami.png"
+  #       subtitle: "Web traffic monitor & statistics"
+  #       tag: monitoring
+  #       url: "https://web-monitor.phoiweb.com"
+  #       target: "_blank"
