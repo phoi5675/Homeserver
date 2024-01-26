@@ -133,12 +133,12 @@ services:
         url: "https://sso.phoiweb.com"
         target: "_blank"
 
-  # - name: "Monitoring"
-  #   icon: "fas fa-desktop"
-  #   items:
-  #     - name: "Umami"
-  #       logo: "assets/tools/umami.png"
-  #       subtitle: "Web traffic monitor & statistics"
-  #       tag: monitoring
-  #       url: "https://web-monitor.phoiweb.com"
-  #       target: "_blank"
+  - name: "Monitoring"
+    icon: "fas fa-desktop"
+    items:
+      - name: "Grafana"
+        logo: "assets/tools/grafana.png"
+        subtitle: "Server monitoring"
+        tag: monitoring
+        url: "https://grafana.phoiweb.com"
+        target: "_blank"
