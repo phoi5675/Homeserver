@@ -48,7 +48,7 @@ services:
     - 2003:2003
     restart: always
     volumes:
-    - influx-data:/var/lib/influxdb2
+    - influxdb-data:/var/lib/influxdb2
   keycloak:
     command: start
     container_name: keycloak
