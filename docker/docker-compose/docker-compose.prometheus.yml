@@ -51,5 +51,8 @@ services:
     restart: always
     ports:
       - 8086:8086
+      - 2003:2003
+    volumes:
+      - influx-data:/var/lib/influxdb2
     networks:
       - backend
