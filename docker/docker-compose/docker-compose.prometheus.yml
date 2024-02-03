@@ -58,8 +58,6 @@ services:
   graphite:
     image: prom/graphite-exporter
     container_name: graphite
-    volumes:
-      - graphite-data
     networks:
       - backend
     ports:

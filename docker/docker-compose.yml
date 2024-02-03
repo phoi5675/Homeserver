@@ -33,8 +33,6 @@ services:
     - backend
     ports:
     - 2003:9109
-    volumes:
-    - graphite-data
   homer:
     container_name: homer
     environment:
@@ -290,7 +288,6 @@ version: '3.8'
 volumes:
   grafana-data:
     driver: local
-  graphite-data: null
   influxdb-data: null
   media:
     driver: local
