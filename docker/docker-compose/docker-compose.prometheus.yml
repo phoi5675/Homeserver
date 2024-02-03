@@ -51,9 +51,17 @@ services:
     restart: always
     ports:
       - 8086:8086
-      - 2003:2003
     volumes:
       - influxdb-data:/var/lib/influxdb2
-      - ./prometheus/influxdb.conf:/etc/influxdb/influxdb.conf:ro
     networks:
       - backend
+  graphite:
+    image: prom/graphite-exporter
+    container_name: graphite
+    volumes:
+      - graphite-data
+    networks:
+      - backend
+    ports:
+      # - 9108:9108
+      - 2003:9109

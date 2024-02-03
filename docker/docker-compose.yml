@@ -26,6 +26,15 @@ services:
     restart: unless-stopped
     volumes:
     - grafana-data:/var/lib/grafana
+  graphite:
+    container_name: graphite
+    image: prom/graphite-exporter
+    networks:
+    - backend
+    ports:
+    - 2003:9109
+    volumes:
+    - graphite-data
   homer:
     container_name: homer
     environment:
@@ -45,11 +54,9 @@ services:
     - backend
     ports:
     - 8086:8086
-    - 2003:2003
     restart: always
     volumes:
     - influxdb-data:/var/lib/influxdb2
-    - ./prometheus/influxdb.conf:/etc/influxdb/influxdb.conf:ro
   keycloak:
     command: start
     container_name: keycloak
@@ -283,6 +290,7 @@ version: '3.8'
 volumes:
   grafana-data:
     driver: local
+  graphite-data: null
   influxdb-data: null
   media:
     driver: local

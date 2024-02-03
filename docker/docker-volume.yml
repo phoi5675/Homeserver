@@ -37,3 +37,4 @@ volumes:
   grafana-data:
     driver: local
   influxdb-data: null
+  graphite-data: null

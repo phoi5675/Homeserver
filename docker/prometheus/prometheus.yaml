@@ -26,3 +26,9 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ["cadvisor:8080"]
+
+  # truenas
+  - job_name: "truenas"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["graphite:9108"]
