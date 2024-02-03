@@ -26,13 +26,6 @@ services:
     restart: unless-stopped
     volumes:
     - grafana-data:/var/lib/grafana
-  graphite:
-    container_name: graphite
-    image: prom/graphite-exporter
-    networks:
-    - backend
-    ports:
-    - 2003:9109
   homer:
     container_name: homer
     environment:

@@ -55,11 +55,3 @@ services:
       - influxdb-data:/var/lib/influxdb2
     networks:
       - backend
-  graphite:
-    image: prom/graphite-exporter
-    container_name: graphite
-    networks:
-      - backend
-    ports:
-      # - 9108:9108
-      - 2003:9109
