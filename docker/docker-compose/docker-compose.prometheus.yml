@@ -54,5 +54,6 @@ services:
       - 2003:2003
     volumes:
       - influxdb-data:/var/lib/influxdb2
+      - ./prometheus/influxdb.conf:/etc/influxdb/influxdb.conf:ro
     networks:
       - backend

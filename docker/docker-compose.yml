@@ -49,6 +49,7 @@ services:
     restart: always
     volumes:
     - influxdb-data:/var/lib/influxdb2
+    - ./prometheus/influxdb.conf:/etc/influxdb/influxdb.conf:ro
   keycloak:
     command: start
     container_name: keycloak
