@@ -48,6 +48,7 @@ services:
   influxdata:
     image: influxdb:latest
     container_name: influxdata
+    restart: always
     ports:
       - 8086:8086
     networks:
